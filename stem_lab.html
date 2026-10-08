@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>STEM Lab: Learn, Experiment, Connect</title>
+  
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -32,56 +33,69 @@
       }
     }
   </script>
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Fallback CSS styles to guarantee flawless display even if CDN is delayed -->
   <style>
-    /* Custom Glow & Glassmorphic Utilities */
+    body {
+      background-color: #070b14;
+      color: #f1f5f9;
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
     .glass-panel {
-      background: rgba(13, 21, 39, 0.75);
+      background: rgba(13, 21, 39, 0.85);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
     .glass-card {
-      background: rgba(20, 32, 61, 0.6);
+      background: rgba(20, 32, 61, 0.7);
       backdrop-filter: blur(8px);
-      border: 1px solid rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.2);
     }
-    .glow-cyan {
-      box-shadow: 0 0 25px -5px rgba(56, 189, 248, 0.4);
+    .step-pill {
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      white-space: nowrap;
+      background: rgba(30, 41, 59, 0.8);
+      color: #94a3b8;
+      border: 1px solid rgba(51, 65, 85, 0.8);
+      transition: all 0.2s ease;
     }
-    .glow-purple {
-      box-shadow: 0 0 25px -5px rgba(139, 92, 246, 0.4);
+    .step-pill.active {
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.5);
     }
-    .glow-chem {
-      box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.4);
+    .vocab-word {
+      color: #38bdf8;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+      font-weight: 600;
     }
-    /* Liquid animation in beaker */
+    .vocab-word:hover {
+      color: #7dd3fc;
+    }
     @keyframes waveMotion {
       0%, 100% { border-radius: 4px 4px 18px 18px; transform: scaleY(1); }
-      50% { transform: scaleY(1.02); }
+      50% { transform: scaleY(1.03); }
     }
     .liquid-wave {
       animation: waveMotion 3s ease-in-out infinite;
     }
-    /* Hide scrollbars for slick tabs */
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 <body class="bg-lab-900 text-slate-100 font-sans antialiased min-h-screen selection:bg-cyan-500 selection:text-black relative overflow-x-hidden">
 
-  <!-- Background Animated Particle Canvas -->
+  <!-- Background Particle Animation -->
   <canvas id="bg-particle-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
 
-  <!-- Sound Engine / Audio Synthesizer (Zero external dependencies) -->
+  <!-- Audio Synthesizer (No external media files required) -->
   <script>
     const SoundEngine = {
       ctx: null,
@@ -120,12 +134,8 @@
         this.playTone(320, 'sawtooth', 0.15, 0.05);
         setTimeout(() => this.playTone(260, 'sawtooth', 0.2, 0.06), 120);
       },
-      bubble() {
-        this.playTone(900 + Math.random() * 400, 'sine', 0.08, 0.05);
-      },
-      drop() {
-        this.playTone(220, 'triangle', 0.2, 0.1);
-      }
+      bubble() { this.playTone(900 + Math.random() * 400, 'sine', 0.08, 0.05); },
+      drop() { this.playTone(220, 'triangle', 0.2, 0.1); }
     };
     window.addEventListener('click', () => SoundEngine.init(), { once: true });
   </script>
@@ -152,23 +162,20 @@
         <a href="#progress" class="px-3 py-1.5 rounded-lg hover:text-cyan-400 hover:bg-slate-800/50 transition">Achievements</a>
       </nav>
 
-      <!-- Action Utilities: Language Support Modal, Teacher View, XP Badge -->
+      <!-- Language Support & Teacher Switch -->
       <div class="flex items-center gap-2 sm:gap-3">
-        <!-- Live XP Pill -->
         <div class="flex items-center gap-1.5 bg-slate-800/90 border border-amber-500/40 px-3 py-1 rounded-full text-xs font-bold text-amber-400 shadow-sm">
           <span>⚡</span>
           <span id="nav-xp-counter">450</span>
           <span class="text-[10px] text-slate-400 font-mono">XP</span>
         </div>
 
-        <!-- Bilingual Support Trigger Button -->
-        <button onclick="toggleGlossaryModal(true)" class="flex items-center gap-1.5 bg-cyan-950/70 hover:bg-cyan-900 border border-cyan-500/50 text-cyan-300 px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm hover:shadow-cyan-500/20 active:scale-95" title="Open Bilingual STEM Vocabulary Glossary">
+        <button onclick="toggleGlossaryModal(true)" class="flex items-center gap-1.5 bg-cyan-950/70 hover:bg-cyan-900 border border-cyan-500/50 text-cyan-300 px-3 py-1.5 rounded-lg text-xs font-semibold transition active:scale-95">
           <span class="text-sm">🌐</span>
           <span class="hidden sm:inline">Language Support</span>
           <span class="text-[10px] bg-cyan-800/80 px-1.5 py-0.5 rounded text-cyan-100 font-mono">ES / EN</span>
         </button>
 
-        <!-- Teacher Mode Switch Button -->
         <button onclick="toggleTeacherView()" id="btn-toggle-teacher" class="flex items-center gap-1.5 bg-indigo-950/70 hover:bg-indigo-900 border border-indigo-500/40 text-indigo-300 px-3 py-1.5 rounded-lg text-xs font-semibold transition active:scale-95">
           <span>👨‍🏫</span>
           <span class="hidden lg:inline" id="teacher-mode-label">Teacher Mode</span>
@@ -177,12 +184,12 @@
     </div>
   </header>
 
+  <!-- Notification Toast Container -->
   <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none max-w-sm w-full"></div>
 
-  <section id="home" class="relative pt-12 pb-20 md:pt-20 md:pb-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
+  <section id="home" class="relative pt-12 pb-20 md:pt-20 md:pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
     <div class="relative z-10 text-center max-w-4xl mx-auto">
       
-      <!-- Bilingual Welcome Badge -->
       <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-800/80 border border-cyan-500/30 text-xs font-medium text-cyan-300 mb-6 backdrop-blur-md shadow-lg">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
         <span>Virtual Laboratory Online</span>
@@ -190,7 +197,6 @@
         <span class="text-slate-300">Empowering Bilingual Scientists</span>
       </div>
 
-      <!-- Main Title & Motto -->
       <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white mb-4">
         <span class="block">STEM LAB</span>
         <span class="block text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 via-sky-300 to-purple-400 bg-clip-text text-transparent mt-2">
@@ -202,18 +208,16 @@
         “Learn STEM through interactive experiments while building confidence in academic English.”
       </p>
 
-      <!-- CTA Buttons -->
       <div class="flex flex-wrap items-center justify-center gap-4">
         <a href="#labs" onclick="SoundEngine.click()" class="inline-flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-base bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-600 text-white shadow-xl shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-105 transition-all transform active:scale-95">
           <span>ENTER THE LAB</span>
           <span class="text-xl">→</span>
         </a>
-        <a href="#challenges" onclick="SoundEngine.click()" class="inline-flex items-center gap-2 px-6 py-4 rounded-xl font-semibold text-base bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700 transition backdrop-blur-sm">
+        <a href="#challenges" onclick="SoundEngine.click()" class="inline-flex items-center gap-2 px-6 py-4 rounded-xl font-semibold text-base bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700 transition">
           <span>🚀 Explore Missions</span>
         </a>
       </div>
 
-      <!-- Animated Science Icons Grid (Floating Scientific Elements) -->
       <div class="mt-14 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 text-center">
         <div class="glass-card p-3 rounded-xl hover:border-cyan-400/50 transition transform hover:-translate-y-1">
           <div class="text-2xl mb-1">⚛️</div>
@@ -259,10 +263,10 @@
       <div>
         <div class="text-xs font-bold uppercase tracking-wider text-cyan-400 mb-1">Virtual STEM Stations</div>
         <h2 class="text-3xl font-extrabold text-white">Choose Your Laboratory</h2>
-        <p class="text-sm text-slate-400">Select an interactive lab to begin inquiry, run simulations, and record scientific findings.</p>
+        <p class="text-sm text-slate-400">Select an interactive lab to run simulations and record scientific findings.</p>
       </div>
 
-      <!-- Quick Subject Filter Tabs -->
+      <!-- Laboratory Selector Tabs -->
       <div class="flex p-1 bg-slate-900/90 rounded-xl border border-slate-800 gap-1 overflow-x-auto no-scrollbar">
         <button onclick="selectLabTab('physics')" id="tab-btn-physics" class="lab-tab-btn px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2 bg-amber-500/20 text-amber-300 border border-amber-500/40">
           <span>⚡</span> Physics
@@ -279,10 +283,10 @@
       </div>
     </div>
 
-    <!-- Active Laboratory Container with 8-Step Scientific Protocol -->
+    <!-- Active Laboratory Box -->
     <div id="labs" class="glass-panel rounded-2xl p-4 sm:p-6 lg:p-8 border border-slate-800 shadow-2xl relative">
       
-      <!-- Top Lab Header Bar -->
+      <!-- Lab Header -->
       <div class="flex flex-wrap items-center justify-between pb-6 border-b border-slate-800 gap-4">
         <div class="flex items-center gap-3">
           <div id="lab-hero-icon" class="w-12 h-12 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-2xl">
@@ -300,48 +304,41 @@
         <!-- Academic Vocabulary Quick Bar -->
         <div class="flex flex-wrap items-center gap-2">
           <span class="text-xs font-semibold text-slate-400">Target Academic Terms:</span>
-          <div id="lab-quick-terms" class="flex flex-wrap gap-1.5">
-            <!-- Injected dynamically -->
-          </div>
+          <div id="lab-quick-terms" class="flex flex-wrap gap-1.5"></div>
         </div>
       </div>
 
-      <!-- Step Navigation Indicator Bar -->
+      <!-- 8-Step Navigation Indicator -->
       <div class="py-4 border-b border-slate-800 overflow-x-auto no-scrollbar">
         <div class="flex items-center gap-2 min-w-[700px]">
-          <div class="step-pill active" id="pill-step-1">1. Question</div>
+          <div class="step-pill active">1. Question</div>
           <span class="text-slate-600">→</span>
-          <div class="step-pill" id="pill-step-2">2. Hypothesis</div>
+          <div class="step-pill">2. Hypothesis</div>
           <span class="text-slate-600">→</span>
-          <div class="step-pill" id="pill-step-3">3. Experiment</div>
+          <div class="step-pill">3. Experiment</div>
           <span class="text-slate-600">→</span>
-          <div class="step-pill" id="pill-step-4">4. Data</div>
+          <div class="step-pill">4. Data</div>
           <span class="text-slate-600">→</span>
-          <div class="step-pill" id="pill-step-5">5. Graph</div>
+          <div class="step-pill">5. Graph</div>
           <span class="text-slate-600">→</span>
-          <div class="step-pill" id="pill-step-6">6. Analysis</div>
+          <div class="step-pill">6. Analysis</div>
           <span class="text-slate-600">→</span>
-          <div class="step-pill" id="pill-step-7">7. Conclusion</div>
+          <div class="step-pill">7. Conclusion</div>
           <span class="text-slate-600">→</span>
-          <div class="step-pill" id="pill-step-8">8. Vocabulary</div>
+          <div class="step-pill">8. Vocabulary</div>
         </div>
       </div>
 
       <div class="py-6">
         
-        <!-- ==================== 1. PHYSICS LAB VIEW ==================== -->
         <div id="lab-view-physics" class="lab-module-container space-y-8">
           
-          <!-- Step 1 & 2: Question & Hypothesis -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="glass-card p-5 rounded-xl border-amber-500/20">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Step 1 — Question</span>
-                <span class="text-xs bg-slate-800 px-2 py-0.5 rounded text-slate-400">Scientific Inquiry</span>
-              </div>
-              <h4 class="text-lg font-bold text-white mb-2">What are we trying to discover?</h4>
+              <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Step 1 — Question</span>
+              <h4 class="text-lg font-bold text-white mb-2 mt-1">What are we trying to discover?</h4>
               <p class="text-sm text-slate-300 leading-relaxed">
-                Does a heavier object hit the ground faster than a lighter one when dropped from the same height under different gravitational fields? How do <span class="vocab-word" onclick="showVocabDetail('acceleration')">acceleration</span>, <span class="vocab-word" onclick="showVocabDetail('velocity')">velocity</span>, and <span class="vocab-word" onclick="showVocabDetail('gravity')">gravity</span> determine free-fall time?
+                Does a heavier object hit the ground faster than a lighter one when dropped from the same height? How do <span class="vocab-word" onclick="showVocabDetail('acceleration')">acceleration</span>, <span class="vocab-word" onclick="showVocabDetail('velocity')">velocity</span>, and <span class="vocab-word" onclick="showVocabDetail('gravity')">gravity</span> determine free-fall time?
               </p>
             </div>
 
@@ -355,7 +352,7 @@
               </label>
               <div class="flex gap-2">
                 <input type="text" id="physics-hypothesis-input" placeholder="e.g., If gravity increases, then the falling time will decrease because..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-400">
-                <button onclick="submitHypothesis('physics')" class="bg-amber-500 hover:bg-amber-600 text-black font-bold px-4 py-2 rounded-lg text-xs transition whitespace-nowrap">
+                <button onclick="submitHypothesis('physics')" class="bg-amber-500 hover:bg-amber-600 text-black font-bold px-4 py-2 rounded-lg text-xs transition">
                   Save
                 </button>
               </div>
@@ -363,7 +360,7 @@
             </div>
           </div>
 
-          <!-- Step 3: Interactive Physics Experiment Canvas -->
+          <!-- Free Fall Chamber Simulation -->
           <div class="glass-card p-6 rounded-2xl border-amber-500/20">
             <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
               <div>
@@ -413,10 +410,9 @@
               </div>
             </div>
 
-            <!-- Simulation Canvas -->
+            <!-- Canvas View -->
             <div class="relative bg-slate-950 rounded-xl border border-slate-800 h-72 sm:h-80 overflow-hidden flex items-end">
               <canvas id="physics-canvas" class="w-full h-full block"></canvas>
-              <!-- Live telemetry overlay -->
               <div class="absolute top-3 left-3 bg-slate-900/90 border border-slate-700/80 px-3 py-2 rounded-lg text-[11px] font-mono space-y-1">
                 <div>Elapsed Time (t): <span id="tele-time" class="text-cyan-400">0.00 s</span></div>
                 <div>Velocity (v): <span id="tele-velocity" class="text-amber-400">0.00 m/s</span></div>
@@ -425,16 +421,14 @@
             </div>
           </div>
 
-          <!-- Step 4 & 5: Data Table & Dynamic Graph -->
+          <!-- Data & Graphs -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Data Table -->
             <div class="glass-card p-5 rounded-xl border-amber-500/20 flex flex-col justify-between">
               <div>
                 <div class="flex items-center justify-between mb-3">
                   <span class="text-xs font-bold text-amber-400 uppercase">Step 4 — Experimental Data</span>
                   <button onclick="clearPhysicsData()" class="text-[11px] text-slate-400 hover:text-rose-400">Clear Logs</button>
                 </div>
-                <p class="text-xs text-slate-400 mb-3">Data automatically recorded upon each drop trial:</p>
                 <div class="overflow-x-auto max-h-56 no-scrollbar">
                   <table class="w-full text-left text-xs">
                     <thead class="bg-slate-900 text-slate-400 border-b border-slate-800">
@@ -456,11 +450,10 @@
                 </div>
               </div>
               <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400">
-                Formula verified: <code class="text-amber-300">t = √(2h / g)</code> | <code class="text-cyan-300">v = √(2gh)</code>
+                Equations: <code class="text-amber-300">t = √(2h / g)</code> | <code class="text-cyan-300">v = √(2gh)</code>
               </div>
             </div>
 
-            <!-- Graph Canvas -->
             <div class="glass-card p-5 rounded-xl border-amber-500/20">
               <div class="flex items-center justify-between mb-3">
                 <span class="text-xs font-bold text-amber-400 uppercase">Step 5 — Dynamic Graph</span>
@@ -469,16 +462,11 @@
               <div class="bg-slate-950 rounded-lg p-2 border border-slate-800 h-56 flex items-center justify-center relative">
                 <canvas id="physics-graph-canvas" class="w-full h-full"></canvas>
               </div>
-              <div class="flex justify-between items-center text-[11px] text-slate-400 mt-2 font-mono">
-                <span>Slope = Acceleration (g)</span>
-                <span>Area under curve = Height (h)</span>
-              </div>
             </div>
           </div>
 
-          <!-- Step 6 & 7: Analysis & Conclusion -->
+          <!-- Analysis & Conclusion -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Step 6: Analysis Questions -->
             <div class="glass-card p-5 rounded-xl border-amber-500/20">
               <span class="text-xs font-bold text-amber-400 uppercase">Step 6 — Scientific Analysis</span>
               <h4 class="text-base font-bold text-white mt-1 mb-3">Analyze Your Evidence</h4>
@@ -518,7 +506,6 @@
               </div>
             </div>
 
-            <!-- Step 7: Conclusion Writing -->
             <div class="glass-card p-5 rounded-xl border-amber-500/20 flex flex-col justify-between">
               <div>
                 <span class="text-xs font-bold text-amber-400 uppercase">Step 7 — Scientific Conclusion</span>
@@ -526,7 +513,7 @@
                 <p class="text-xs text-slate-400 mb-3">
                   Write 1-2 complete sentences in English explaining whether your hypothesis was supported:
                 </p>
-                <textarea id="phys-conclusion-text" rows="4" placeholder="Based on my data, all objects experience equal gravitational acceleration regardless of mass. When dropped on Earth vs Mars..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-amber-400"></textarea>
+                <textarea id="phys-conclusion-text" rows="4" placeholder="Based on my data, all objects experience equal gravitational acceleration regardless of mass..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-amber-400"></textarea>
               </div>
               <div class="mt-4 flex items-center justify-between">
                 <button onclick="submitConclusion('physics')" class="bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold px-4 py-2 rounded-lg text-xs hover:opacity-90 transition">
@@ -537,43 +524,36 @@
             </div>
           </div>
 
-          <!-- Step 8: Academic STEM Vocabulary Card Section -->
+          <!-- Step 8: Academic STEM Vocabulary -->
           <div class="glass-card p-5 rounded-xl border-amber-500/20">
-            <div class="flex items-center justify-between mb-4">
-              <div>
-                <span class="text-xs font-bold text-amber-400 uppercase">Step 8 — Academic STEM Vocabulary</span>
-                <h4 class="text-lg font-bold text-white">Master Physics Terminology</h4>
-              </div>
-              <span class="text-xs text-slate-400">Click any card to inspect Spanish translation & STEM context</span>
-            </div>
-
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              <div onclick="showVocabDetail('velocity')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-amber-400 cursor-pointer transition">
+            <span class="text-xs font-bold text-amber-400 uppercase">Step 8 — Academic STEM Vocabulary</span>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-3">
+              <div onclick="showVocabDetail('velocity')" class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-amber-400 cursor-pointer transition">
                 <div class="text-xs font-extrabold text-amber-300">Velocity</div>
                 <div class="text-[10px] text-slate-400 font-mono mt-1">m/s • Speed + direction</div>
                 <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Velocidad</div>
               </div>
-              <div onclick="showVocabDetail('acceleration')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-amber-400 cursor-pointer transition">
+              <div onclick="showVocabDetail('acceleration')" class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-amber-400 cursor-pointer transition">
                 <div class="text-xs font-extrabold text-amber-300">Acceleration</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">m/s² • Rate of velocity change</div>
+                <div class="text-[10px] text-slate-400 font-mono mt-1">m/s² • Velocity rate</div>
                 <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Aceleración</div>
               </div>
-              <div onclick="showVocabDetail('force')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-amber-400 cursor-pointer transition">
+              <div onclick="showVocabDetail('force')" class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-amber-400 cursor-pointer transition">
                 <div class="text-xs font-extrabold text-amber-300">Force</div>
                 <div class="text-[10px] text-slate-400 font-mono mt-1">N • F = m · a</div>
                 <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Fuerza</div>
               </div>
-              <div onclick="showVocabDetail('mass')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-amber-400 cursor-pointer transition">
+              <div onclick="showVocabDetail('mass')" class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-amber-400 cursor-pointer transition">
                 <div class="text-xs font-extrabold text-amber-300">Mass</div>
                 <div class="text-[10px] text-slate-400 font-mono mt-1">kg • Quantity of matter</div>
                 <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Masa</div>
               </div>
-              <div onclick="showVocabDetail('gravity')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-amber-400 cursor-pointer transition">
+              <div onclick="showVocabDetail('gravity')" class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-amber-400 cursor-pointer transition">
                 <div class="text-xs font-extrabold text-amber-300">Gravity</div>
                 <div class="text-[10px] text-slate-400 font-mono mt-1">Attractive force</div>
                 <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Gravedad</div>
               </div>
-              <div onclick="showVocabDetail('distance')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-amber-400 cursor-pointer transition">
+              <div onclick="showVocabDetail('distance')" class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-amber-400 cursor-pointer transition">
                 <div class="text-xs font-extrabold text-amber-300">Distance</div>
                 <div class="text-[10px] text-slate-400 font-mono mt-1">m • Path length</div>
                 <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Distancia</div>
@@ -582,9 +562,7 @@
           </div>
         </div>
 
-        <!-- ==================== 2. CHEMISTRY LAB VIEW ==================== -->
         <div id="lab-view-chemistry" class="lab-module-container space-y-8 hidden">
-          <!-- Step 1 & 2: Question & Hypothesis -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="glass-card p-5 rounded-xl border-emerald-500/20">
               <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Step 1 — Question</span>
@@ -609,23 +587,21 @@
             </div>
           </div>
 
-          <!-- Step 3: Interactive Virtual pH Meter & Beaker -->
+          <!-- Virtual pH Meter -->
           <div class="glass-card p-6 rounded-2xl border-emerald-500/20">
             <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
               <div>
                 <span class="text-xs font-bold text-emerald-400 uppercase">Step 3 — Interactive Virtual pH Station</span>
                 <h4 class="text-xl font-bold text-white">Digital Spectrometer & Beaker Probe</h4>
               </div>
-              <div class="flex items-center gap-2">
-                <button onclick="resetChemistryLab()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-sm transition">
-                  Reset Solution
-                </button>
-              </div>
+              <button onclick="resetChemistryLab()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-sm transition">
+                Reset Solution
+              </button>
             </div>
 
             <!-- Substance Selection Tray -->
             <div class="mb-6">
-              <label class="block text-xs font-semibold text-slate-300 mb-2">Select a chemical reagent or household solution to test:</label>
+              <label class="block text-xs font-semibold text-slate-300 mb-2">Select a chemical reagent to test:</label>
               <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
                 <button onclick="selectChemical('lemon')" id="chem-btn-lemon" class="chem-select-btn p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-emerald-400 text-left transition active:scale-95">
                   <div class="text-lg">🍋</div>
@@ -660,24 +636,19 @@
               </div>
             </div>
 
-            <!-- Virtual Apparatus Visual: Beaker + Probe + Meter Display -->
+            <!-- Virtual Apparatus Visual -->
             <div class="grid grid-cols-1 md:grid-cols-12 gap-6 bg-slate-950 p-6 rounded-2xl border border-slate-800 items-center">
-              
-              <!-- Virtual Beaker Visual (Left 5 Cols) -->
               <div class="md:col-span-5 flex flex-col items-center justify-center">
                 <div class="relative w-48 h-60 border-4 border-t-0 border-slate-400/50 rounded-b-3xl bg-slate-900/40 p-2 flex flex-col justify-end overflow-hidden shadow-inner">
-                  <!-- Measurement graduation lines -->
                   <div class="absolute left-2 top-8 text-[9px] font-mono text-slate-500">400 ml —</div>
                   <div class="absolute left-2 top-20 text-[9px] font-mono text-slate-500">300 ml —</div>
                   <div class="absolute left-2 top-32 text-[9px] font-mono text-slate-500">200 ml —</div>
                   <div class="absolute left-2 top-44 text-[9px] font-mono text-slate-500">100 ml —</div>
                   
-                  <!-- Suspended pH Electrode Probe -->
                   <div class="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-36 bg-slate-600 rounded-b-lg border-2 border-slate-300 z-10 flex flex-col items-center justify-end">
                     <div class="w-2.5 h-6 bg-cyan-400 rounded-b opacity-80 animate-pulse"></div>
                   </div>
 
-                  <!-- Animated Reagent Liquid Body -->
                   <div id="beaker-liquid" class="w-full h-3/4 rounded-b-2xl transition-all duration-700 liquid-wave flex items-center justify-center text-xs font-bold text-white shadow-lg" style="background: rgba(56, 189, 248, 0.45);">
                     <span id="beaker-label-text" class="bg-black/60 px-2 py-0.5 rounded text-[11px] backdrop-blur-sm">Pure Water</span>
                   </div>
@@ -685,9 +656,7 @@
                 <div class="text-xs text-slate-400 font-mono mt-3">Beaker #1 • 25°C Chamber</div>
               </div>
 
-              <!-- Digital Spectrometer pH Meter Readout (Right 7 Cols) -->
               <div class="md:col-span-7 space-y-4">
-                <!-- Large Digital Display Card -->
                 <div class="bg-slate-900 border border-slate-700/80 p-5 rounded-2xl">
                   <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">DIGITAL pH SENSOR</span>
@@ -704,7 +673,6 @@
                   </p>
                 </div>
 
-                <!-- Complete 0-14 pH Spectrum Visual Gradient Bar -->
                 <div>
                   <div class="flex justify-between text-[10px] font-mono text-slate-400 mb-1">
                     <span class="text-rose-400">0 Strong Acid</span>
@@ -716,9 +684,7 @@
                   </div>
                 </div>
 
-                <!-- Acid / Base Titration Additives -->
                 <div class="flex flex-wrap gap-2 pt-2">
-                  <span class="text-xs text-slate-400 flex items-center">Add Reagent:</span>
                   <button onclick="addAcidDrop()" class="bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-xs px-3 py-1.5 rounded-lg font-semibold transition active:scale-95">
                     + Add Acid (Dropwise)
                   </button>
@@ -733,14 +699,11 @@
             </div>
           </div>
 
-          <!-- Step 4 & 5: Data Table & Dynamic Concentration Graph -->
+          <!-- Data & Vocabulary for Chemistry -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="glass-card p-5 rounded-xl border-emerald-500/20">
-              <div class="flex items-center justify-between mb-3">
-                <span class="text-xs font-bold text-emerald-400 uppercase">Step 4 — Chemical Data Log</span>
-                <button onclick="clearChemData()" class="text-[11px] text-slate-400 hover:text-rose-400">Clear</button>
-              </div>
-              <div class="overflow-x-auto max-h-56 no-scrollbar">
+              <span class="text-xs font-bold text-emerald-400 uppercase">Step 4 — Chemical Data Log</span>
+              <div class="overflow-x-auto max-h-56 mt-2 no-scrollbar">
                 <table class="w-full text-left text-xs">
                   <thead class="bg-slate-900 text-slate-400 border-b border-slate-800">
                     <tr>
@@ -751,7 +714,6 @@
                     </tr>
                   </thead>
                   <tbody id="chem-data-body" class="divide-y divide-slate-800/60 font-mono text-slate-300">
-                    <!-- Default initial data -->
                     <tr>
                       <td class="p-2 text-white">Pure Water</td>
                       <td class="p-2 text-emerald-400">7.00</td>
@@ -763,123 +725,16 @@
               </div>
             </div>
 
-            <!-- Dynamic Graph: Logarithmic pH Scale Representation -->
             <div class="glass-card p-5 rounded-xl border-emerald-500/20">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-bold text-emerald-400 uppercase">Step 5 — Logarithmic pH Graph</span>
-                <span class="text-xs text-slate-400 font-mono">pH = -log₁₀[H⁺]</span>
-              </div>
-              <div class="bg-slate-950 rounded-lg p-2 border border-slate-800 h-56 flex items-center justify-center relative">
+              <span class="text-xs font-bold text-emerald-400 uppercase">Step 5 — Logarithmic pH Graph</span>
+              <div class="bg-slate-950 rounded-lg p-2 border border-slate-800 h-56 flex items-center justify-center relative mt-2">
                 <canvas id="chem-graph-canvas" class="w-full h-full"></canvas>
-              </div>
-            </div>
-          </div>
-
-          <!-- Step 6, 7 & 8: Analysis, Conclusion & Vocabulary -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Step 6: Analysis Quiz -->
-            <div class="glass-card p-5 rounded-xl border-emerald-500/20">
-              <span class="text-xs font-bold text-emerald-400 uppercase">Step 6 — Chemical Analysis</span>
-              <h4 class="text-base font-bold text-white mt-1 mb-3">Questions on Observation</h4>
-              <div class="space-y-4 text-xs">
-                <div>
-                  <p class="font-semibold text-slate-200 mb-1.5">Q1: What happens to the pH when you add more acid to the beaker?</p>
-                  <div class="space-y-1">
-                    <label class="flex items-center gap-2 p-2 rounded bg-slate-900 hover:bg-slate-800/80 cursor-pointer">
-                      <input type="radio" name="chem-q1" value="correct" class="text-emerald-500">
-                      <span>The pH decreases because hydrogen ion [H⁺] concentration increases</span>
-                    </label>
-                    <label class="flex items-center gap-2 p-2 rounded bg-slate-900 hover:bg-slate-800/80 cursor-pointer">
-                      <input type="radio" name="chem-q1" value="wrong" class="text-emerald-500">
-                      <span>The pH increases above 14</span>
-                    </label>
-                  </div>
-                </div>
-
-                <div>
-                  <p class="font-semibold text-slate-200 mb-1.5">Q2: Bleach has a pH of approximately 12.5. How is it classified?</p>
-                  <div class="space-y-1">
-                    <label class="flex items-center gap-2 p-2 rounded bg-slate-900 hover:bg-slate-800/80 cursor-pointer">
-                      <input type="radio" name="chem-q2" value="wrong" class="text-emerald-500">
-                      <span>Weak acid</span>
-                    </label>
-                    <label class="flex items-center gap-2 p-2 rounded bg-slate-900 hover:bg-slate-800/80 cursor-pointer">
-                      <input type="radio" name="chem-q2" value="correct" class="text-emerald-500">
-                      <span>Strong alkaline base</span>
-                    </label>
-                  </div>
-                </div>
-
-                <button onclick="checkAnalysisQuiz('chemistry')" class="w-full bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold py-2 rounded-lg transition border border-emerald-500/30">
-                  Verify Chemistry Answers
-                </button>
-                <div id="chem-quiz-feedback" class="text-xs font-medium"></div>
-              </div>
-            </div>
-
-            <!-- Step 7: Conclusion Writing -->
-            <div class="glass-card p-5 rounded-xl border-emerald-500/20 flex flex-col justify-between">
-              <div>
-                <span class="text-xs font-bold text-emerald-400 uppercase">Step 7 — Scientific Conclusion</span>
-                <h4 class="text-base font-bold text-white mt-1 mb-2">Write Your Explanation</h4>
-                <p class="text-xs text-slate-400 mb-3">
-                  Explain how pH changes reflect the balance between acidic and basic ions in solution:
-                </p>
-                <textarea id="chem-conclusion-text" rows="4" placeholder="From my observations, substances with pH less than 7 contain higher hydronium concentrations, whereas solutions above 7..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-400"></textarea>
-              </div>
-              <div class="mt-4 flex items-center justify-between">
-                <button onclick="submitConclusion('chemistry')" class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-black font-bold px-4 py-2 rounded-lg text-xs hover:opacity-90 transition">
-                  Submit Conclusion (+50 XP)
-                </button>
-                <span id="chem-concl-saved" class="text-xs text-emerald-400 font-bold hidden">✓ Conclusion Saved!</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Step 8: Chemistry Vocabulary -->
-          <div class="glass-card p-5 rounded-xl border-emerald-500/20">
-            <div class="flex items-center justify-between mb-4">
-              <span class="text-xs font-bold text-emerald-400 uppercase">Step 8 — Academic Chemistry Vocabulary</span>
-              <span class="text-xs text-slate-400">Click any card to inspect translation</span>
-            </div>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              <div onclick="showVocabDetail('ph')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-emerald-400 cursor-pointer transition">
-                <div class="text-xs font-extrabold text-emerald-300">pH Scale</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">0-14 Acidity index</div>
-                <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Escala de pH</div>
-              </div>
-              <div onclick="showVocabDetail('acid')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-emerald-400 cursor-pointer transition">
-                <div class="text-xs font-extrabold text-emerald-300">Acid</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">Donates H⁺ protons</div>
-                <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Ácido</div>
-              </div>
-              <div onclick="showVocabDetail('base')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-emerald-400 cursor-pointer transition">
-                <div class="text-xs font-extrabold text-emerald-300">Base / Alkaline</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">Accepts H⁺ protons</div>
-                <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Base / Alcalino</div>
-              </div>
-              <div onclick="showVocabDetail('concentration')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-emerald-400 cursor-pointer transition">
-                <div class="text-xs font-extrabold text-emerald-300">Concentration</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">Molarity (mol/L)</div>
-                <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Concentración</div>
-              </div>
-              <div onclick="showVocabDetail('solution')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-emerald-400 cursor-pointer transition">
-                <div class="text-xs font-extrabold text-emerald-300">Solution</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">Homogeneous mixture</div>
-                <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Solución</div>
-              </div>
-              <div onclick="showVocabDetail('temperature')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-emerald-400 cursor-pointer transition">
-                <div class="text-xs font-extrabold text-emerald-300">Temperature</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">Thermal energy (°C / K)</div>
-                <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Temperatura</div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- ==================== 3. MATHEMATICS LAB VIEW ==================== -->
         <div id="lab-view-math" class="lab-module-container space-y-8 hidden">
-          <!-- Step 1 & 2: Question & Hypothesis -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="glass-card p-5 rounded-xl border-purple-500/20">
               <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">Step 1 — Question</span>
@@ -904,22 +759,17 @@
             </div>
           </div>
 
-          <!-- Step 3: Interactive Linear Equation Graphing Tool -->
           <div class="glass-card p-6 rounded-2xl border-purple-500/20">
             <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
               <div>
                 <span class="text-xs font-bold text-purple-400 uppercase">Step 3 — Interactive Graphing Canvas</span>
                 <h4 class="text-xl font-bold text-white">Dynamic Linear Function Plotter</h4>
               </div>
-              <div class="flex items-center gap-2">
-                <span class="text-xs text-slate-400">Equation:</span>
-                <span id="math-formula-display" class="bg-purple-950/80 border border-purple-500/50 px-3 py-1 rounded-lg font-mono text-sm text-purple-300 font-bold">
-                  y = 1.00x + 0.00
-                </span>
-              </div>
+              <span id="math-formula-display" class="bg-purple-950/80 border border-purple-500/50 px-3 py-1 rounded-lg font-mono text-sm text-purple-300 font-bold">
+                y = 1.00x + 0.00
+              </span>
             </div>
 
-            <!-- Parameter Sliders -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
               <div>
                 <div class="flex justify-between text-xs font-semibold mb-1">
@@ -927,11 +777,6 @@
                   <span id="label-math-slope" class="text-purple-400 font-mono">1.00</span>
                 </div>
                 <input type="range" id="math-slider-m" min="-5" max="5" step="0.25" value="1" oninput="updateMathPlot()" class="w-full accent-purple-500">
-                <div class="flex justify-between text-[10px] text-slate-500 mt-1 font-mono">
-                  <span>-5.0 (Steep Negative)</span>
-                  <span>0 (Horizontal)</span>
-                  <span>+5.0 (Steep Positive)</span>
-                </div>
               </div>
 
               <div>
@@ -940,116 +785,16 @@
                   <span id="label-math-b" class="text-purple-400 font-mono">0.00</span>
                 </div>
                 <input type="range" id="math-slider-b" min="-6" max="6" step="0.5" value="0" oninput="updateMathPlot()" class="w-full accent-purple-500">
-                <div class="flex justify-between text-[10px] text-slate-500 mt-1 font-mono">
-                  <span>-6.0 (Down)</span>
-                  <span>Origin (0,0)</span>
-                  <span>+6.0 (Up)</span>
-                </div>
               </div>
             </div>
 
-            <!-- Coordinate Graph Canvas -->
             <div class="bg-slate-950 rounded-xl p-3 border border-slate-800 h-80 relative flex items-center justify-center">
               <canvas id="math-canvas" class="w-full h-full"></canvas>
-            </div>
-            
-            <div class="mt-4 flex flex-wrap items-center justify-between gap-2 text-xs">
-              <div class="text-slate-400">
-                Point of intersection: <span id="math-intercept-coord" class="font-mono text-purple-300">(0, 0)</span> | 
-                Root (x-intercept): <span id="math-root-coord" class="font-mono text-cyan-300">(0, 0)</span>
-              </div>
-              <button onclick="logMathDataPoint()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-4 py-1.5 rounded-lg text-xs transition">
-                Record Coordinates
-              </button>
-            </div>
-          </div>
-
-          <!-- Step 4, 5, 6, 7 & 8: Data, Analysis & Vocabulary -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Data Table -->
-            <div class="glass-card p-5 rounded-xl border-purple-500/20">
-              <span class="text-xs font-bold text-purple-400 uppercase">Step 4 — Function Value Table</span>
-              <div class="overflow-x-auto max-h-52 mt-2 no-scrollbar">
-                <table class="w-full text-left text-xs">
-                  <thead class="bg-slate-900 text-slate-400 border-b border-slate-800 font-mono">
-                    <tr>
-                      <th class="p-2">x</th>
-                      <th class="p-2">Formula mx + b</th>
-                      <th class="p-2">y Output</th>
-                      <th class="p-2">Coordinate (x, y)</th>
-                    </tr>
-                  </thead>
-                  <tbody id="math-table-body" class="divide-y divide-slate-800/60 font-mono text-slate-300">
-                    <!-- Populated dynamically -->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- Analysis Quiz -->
-            <div class="glass-card p-5 rounded-xl border-purple-500/20">
-              <span class="text-xs font-bold text-purple-400 uppercase">Step 6 — Mathematical Analysis</span>
-              <div class="space-y-4 text-xs mt-2">
-                <div>
-                  <p class="font-semibold text-slate-200 mb-1">Q1: How does increasing the slope from m = 1 to m = 4 affect the graph?</p>
-                  <label class="flex items-center gap-2 p-2 rounded bg-slate-900 hover:bg-slate-800/80 cursor-pointer">
-                    <input type="radio" name="math-q1" value="correct" class="text-purple-500">
-                    <span>The line becomes steeper, rising faster per unit of x</span>
-                  </label>
-                  <label class="flex items-center gap-2 p-2 rounded bg-slate-900 hover:bg-slate-800/80 cursor-pointer mt-1">
-                    <input type="radio" name="math-q1" value="wrong" class="text-purple-500">
-                    <span>The line shifts horizontally to the left</span>
-                  </label>
-                </div>
-                <button onclick="checkAnalysisQuiz('math')" class="w-full bg-slate-800 hover:bg-slate-700 text-purple-300 font-bold py-2 rounded-lg transition border border-purple-500/30">
-                  Verify Math Answer
-                </button>
-                <div id="math-quiz-feedback" class="text-xs font-medium"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Vocabulary -->
-          <div class="glass-card p-5 rounded-xl border-purple-500/20">
-            <span class="text-xs font-bold text-purple-400 uppercase">Step 8 — Academic Math Vocabulary</span>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-3">
-              <div onclick="showVocabDetail('slope')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-purple-400 cursor-pointer transition">
-                <div class="text-xs font-extrabold text-purple-300">Slope</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">Δy / Δx (Rise / Run)</div>
-                <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Pendiente</div>
-              </div>
-              <div onclick="showVocabDetail('intercept')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-purple-400 cursor-pointer transition">
-                <div class="text-xs font-extrabold text-purple-300">y-Intercept</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">Value where x = 0</div>
-                <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Intersección con y</div>
-              </div>
-              <div onclick="showVocabDetail('function')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-purple-400 cursor-pointer transition">
-                <div class="text-xs font-extrabold text-purple-300">Function</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">f(x) input/output rule</div>
-                <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Función</div>
-              </div>
-              <div onclick="showVocabDetail('algebra')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-purple-400 cursor-pointer transition">
-                <div class="text-xs font-extrabold text-purple-300">Algebra</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">Symbols & relations</div>
-                <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Álgebra</div>
-              </div>
-              <div onclick="showVocabDetail('variable')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-purple-400 cursor-pointer transition">
-                <div class="text-xs font-extrabold text-purple-300">Variable</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">Symbol representing value</div>
-                <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Variable</div>
-              </div>
-              <div onclick="showVocabDetail('coordinate')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-purple-400 cursor-pointer transition">
-                <div class="text-xs font-extrabold text-purple-300">Coordinate Plane</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">2D Cartesian grid (x, y)</div>
-                <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Plano Cartesiano</div>
-              </div>
             </div>
           </div>
         </div>
 
-        <!-- ==================== 4. CALCULUS LAB VIEW ==================== -->
         <div id="lab-view-calculus" class="lab-module-container space-y-8 hidden">
-          <!-- Step 1 & 2: Question & Hypothesis -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="glass-card p-5 rounded-xl border-pink-500/20">
               <span class="text-xs font-bold text-pink-400 uppercase tracking-wider">Step 1 — Question</span>
@@ -1074,137 +819,41 @@
             </div>
           </div>
 
-          <!-- Step 3: Interactive Tangent Line & Derivative Visualizer -->
           <div class="glass-card p-6 rounded-2xl border-pink-500/20">
             <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
               <div>
                 <span class="text-xs font-bold text-pink-400 uppercase">Step 3 — Interactive Derivative Simulation</span>
-                <h4 class="text-xl font-bold text-white">Dynamic Tangent Vector & Rate of Change</h4>
+                <h4 class="text-xl font-bold text-white">Dynamic Tangent Vector</h4>
               </div>
-              <div class="flex items-center gap-3">
-                <div class="bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800 font-mono text-xs">
-                  <span class="text-slate-400">Function: </span>
-                  <span class="text-pink-400 font-bold">f(x) = 0.5x² - 2</span>
-                </div>
-                <div class="bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800 font-mono text-xs">
-                  <span class="text-slate-400">Derivative: </span>
-                  <span class="text-cyan-400 font-bold">f'(x) = x</span>
-                </div>
+              <div class="bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800 font-mono text-xs">
+                <span class="text-pink-400 font-bold">f(x) = 0.5x² - 2</span> | <span class="text-cyan-400 font-bold">f'(x) = x</span>
               </div>
             </div>
 
-            <!-- Interactive Probe Slider -->
             <div class="mb-4 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
               <div class="flex justify-between text-xs font-semibold mb-1">
                 <span class="text-slate-300">Move Evaluation Point (x₀):</span>
                 <span id="label-calc-x" class="text-pink-400 font-mono text-sm">x = 1.50</span>
               </div>
               <input type="range" id="calc-slider-x" min="-4" max="4" step="0.1" value="1.5" oninput="updateCalculusPlot()" class="w-full accent-pink-500">
-              <div class="flex justify-between text-[10px] text-slate-500 mt-1 font-mono">
-                <span>x = -4.0 (Decreasing rapidly)</span>
-                <span>x = 0.0 (Vertex: f'(0) = 0)</span>
-                <span>x = +4.0 (Increasing rapidly)</span>
-              </div>
             </div>
 
-            <!-- Canvas Container -->
             <div class="bg-slate-950 rounded-xl p-3 border border-slate-800 h-80 relative flex items-center justify-center">
               <canvas id="calc-canvas" class="w-full h-full"></canvas>
             </div>
 
-            <!-- Real-time Mathematical Readout Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
-              <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800 text-center">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4 text-center">
+              <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
                 <div class="text-[10px] uppercase font-mono text-slate-400">Coordinate on Curve</div>
                 <div id="calc-eval-pt" class="text-base font-black font-mono text-pink-300 mt-0.5">(1.50, -0.88)</div>
               </div>
-              <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800 text-center">
+              <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
                 <div class="text-[10px] uppercase font-mono text-slate-400">Tangent Slope f'(x)</div>
                 <div id="calc-eval-slope" class="text-base font-black font-mono text-cyan-400 mt-0.5">m = +1.50</div>
               </div>
-              <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800 text-center">
+              <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
                 <div class="text-[10px] uppercase font-mono text-slate-400">Behavior of Curve</div>
                 <div id="calc-eval-behavior" class="text-xs font-bold text-emerald-400 mt-1">Strictly Increasing ↗</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Step 6, 7 & 8: Analysis, Conclusion & Vocabulary -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Analysis Quiz -->
-            <div class="glass-card p-5 rounded-xl border-pink-500/20">
-              <span class="text-xs font-bold text-pink-400 uppercase">Step 6 — Calculus Analysis</span>
-              <div class="space-y-4 text-xs mt-2">
-                <div>
-                  <p class="font-semibold text-slate-200 mb-1">Q1: What happens to the slope of the tangent line as x increases from negative to positive?</p>
-                  <label class="flex items-center gap-2 p-2 rounded bg-slate-900 hover:bg-slate-800/80 cursor-pointer">
-                    <input type="radio" name="calc-q1" value="correct" class="text-pink-500">
-                    <span>The slope starts negative, becomes 0 at the minimum, and turns increasingly positive</span>
-                  </label>
-                  <label class="flex items-center gap-2 p-2 rounded bg-slate-900 hover:bg-slate-800/80 cursor-pointer mt-1">
-                    <input type="radio" name="calc-q1" value="wrong" class="text-pink-500">
-                    <span>The slope never changes because it is a parabola</span>
-                  </label>
-                </div>
-                <button onclick="checkAnalysisQuiz('calculus')" class="w-full bg-slate-800 hover:bg-slate-700 text-pink-300 font-bold py-2 rounded-lg transition border border-pink-500/30">
-                  Verify Calculus Answer
-                </button>
-                <div id="calc-quiz-feedback" class="text-xs font-medium"></div>
-              </div>
-            </div>
-
-            <!-- Conclusion -->
-            <div class="glass-card p-5 rounded-xl border-pink-500/20 flex flex-col justify-between">
-              <div>
-                <span class="text-xs font-bold text-pink-400 uppercase">Step 7 — Scientific Conclusion</span>
-                <h4 class="text-base font-bold text-white mt-1 mb-2">Calculus Reflection</h4>
-                <p class="text-xs text-slate-400 mb-3">
-                  Explain the practical difference between an average rate of change and the derivative:
-                </p>
-                <textarea id="calc-conclusion-text" rows="4" placeholder="The derivative gives the exact rate of change at a single instant (the limit as Δx approaches zero), represented by the tangent line..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-pink-400"></textarea>
-              </div>
-              <div class="mt-4 flex items-center justify-between">
-                <button onclick="submitConclusion('calculus')" class="bg-gradient-to-r from-pink-500 to-rose-600 text-white font-bold px-4 py-2 rounded-lg text-xs hover:opacity-90 transition">
-                  Submit Conclusion (+50 XP)
-                </button>
-                <span id="calc-concl-saved" class="text-xs text-emerald-400 font-bold hidden">✓ Conclusion Saved!</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Vocabulary -->
-          <div class="glass-card p-5 rounded-xl border-pink-500/20">
-            <span class="text-xs font-bold text-pink-400 uppercase">Step 8 — Academic Calculus Vocabulary</span>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-3">
-              <div onclick="showVocabDetail('derivative')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-pink-400 cursor-pointer transition">
-                <div class="text-xs font-extrabold text-pink-300">Derivative</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">Instantaneous rate df/dx</div>
-                <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Derivada</div>
-              </div>
-              <div onclick="showVocabDetail('tangent')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-pink-400 cursor-pointer transition">
-                <div class="text-xs font-extrabold text-pink-300">Tangent Line</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">Touches curve at one point</div>
-                <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Línea Tangente</div>
-              </div>
-              <div onclick="showVocabDetail('limit')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-pink-400 cursor-pointer transition">
-                <div class="text-xs font-extrabold text-pink-300">Limit</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">Value approached by f(x)</div>
-                <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Límite</div>
-              </div>
-              <div onclick="showVocabDetail('rate_of_change')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-pink-400 cursor-pointer transition">
-                <div class="text-xs font-extrabold text-pink-300">Rate of Change</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">Speed of quantity change</div>
-                <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Razón de Cambio</div>
-              </div>
-              <div onclick="showVocabDetail('integral')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-pink-400 cursor-pointer transition">
-                <div class="text-xs font-extrabold text-pink-300">Integral</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">Accumulation & area</div>
-                <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Integral</div>
-              </div>
-              <div onclick="showVocabDetail('continuous')" class="vocab-card p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-pink-400 cursor-pointer transition">
-                <div class="text-xs font-extrabold text-pink-300">Continuous</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-1">No breaks or jumps</div>
-                <div class="text-[11px] text-cyan-400 font-medium mt-2">ES: Continuo</div>
               </div>
             </div>
           </div>
@@ -1220,14 +869,13 @@
         <span>🎮</span> Real-World Mission Simulator
       </div>
       <h2 class="text-3xl font-extrabold text-white">STEM Challenges</h2>
-      <p class="text-sm text-slate-400">Apply cross-disciplinary Physics, Chemistry, Math, and Calculus to solve engineering emergencies.</p>
+      <p class="text-sm text-slate-400">Apply Physics, Chemistry, Math, and Calculus to solve engineering emergencies.</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       
       <!-- Challenge 1: Roller Coaster -->
-      <div class="glass-panel p-6 rounded-2xl border border-amber-500/30 flex flex-col justify-between relative overflow-hidden group">
-        <div class="absolute -right-6 -top-6 w-24 h-24 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition"></div>
+      <div class="glass-panel p-6 rounded-2xl border border-amber-500/30 flex flex-col justify-between">
         <div>
           <div class="flex justify-between items-center mb-3">
             <span class="text-xs font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">MISSION 01 • PHYSICS + CALC</span>
@@ -1235,10 +883,9 @@
           </div>
           <h3 class="text-xl font-bold text-white mb-2">Design a Safe Roller Coaster</h3>
           <p class="text-xs text-slate-300 mb-4 leading-relaxed">
-            Calculate gravitational potential energy (<span class="font-mono">PE = mgh</span>) and loop radius curvature to ensure passengers do not exceed safe g-force thresholds while maintaining enough kinetic energy to clear the vertical loop.
+            Calculate gravitational potential energy (<span class="font-mono">PE = mgh</span>) and loop radius curvature to balance g-force thresholds and clear the vertical loop.
           </p>
           
-          <!-- Interactive mini controls -->
           <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-2 mb-4 text-xs font-mono">
             <div class="flex justify-between">
               <span class="text-slate-400">Drop Hill Height:</span>
@@ -1262,8 +909,7 @@
       </div>
 
       <!-- Challenge 2: Save the Ocean -->
-      <div class="glass-panel p-6 rounded-2xl border border-emerald-500/30 flex flex-col justify-between relative overflow-hidden group">
-        <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl group-hover:bg-emerald-500/20 transition"></div>
+      <div class="glass-panel p-6 rounded-2xl border border-emerald-500/30 flex flex-col justify-between">
         <div>
           <div class="flex justify-between items-center mb-3">
             <span class="text-xs font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">MISSION 02 • CHEMISTRY</span>
@@ -1271,14 +917,10 @@
           </div>
           <h3 class="text-xl font-bold text-white mb-2">Save the Ocean: Coral Reef</h3>
           <p class="text-xs text-slate-300 mb-4 leading-relaxed">
-            Industrial runoff has dropped the bay's water to an acidic pH of 5.8, threatening marine calcification. Calculate the exact moles of bicarbonate buffer needed to return the water to safe oceanic equilibrium (pH 8.1 - 8.3).
+            Industrial runoff dropped bay water to pH 5.8. Calculate buffer moles needed to restore safe oceanic equilibrium (pH 8.1 - 8.3).
           </p>
 
           <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-2 mb-4 text-xs font-mono">
-            <div class="flex justify-between">
-              <span class="text-slate-400">Current Bay pH:</span>
-              <span id="label-ocean-ph" class="text-rose-400 font-bold">5.80 (Critical)</span>
-            </div>
             <div class="flex justify-between">
               <span class="text-slate-400">Buffer Dose (kg):</span>
               <span id="label-ocean-buffer" class="text-emerald-300 font-bold">450 kg</span>
@@ -1296,8 +938,7 @@
       </div>
 
       <!-- Challenge 3: Build a Better Bridge -->
-      <div class="glass-panel p-6 rounded-2xl border border-purple-500/30 flex flex-col justify-between relative overflow-hidden group">
-        <div class="absolute -right-6 -top-6 w-24 h-24 bg-purple-500/10 rounded-full blur-xl group-hover:bg-purple-500/20 transition"></div>
+      <div class="glass-panel p-6 rounded-2xl border border-purple-500/30 flex flex-col justify-between">
         <div>
           <div class="flex justify-between items-center mb-3">
             <span class="text-xs font-mono px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">MISSION 03 • MATH + FORCES</span>
@@ -1305,7 +946,7 @@
           </div>
           <h3 class="text-xl font-bold text-white mb-2">Build a Better Bridge</h3>
           <p class="text-xs text-slate-300 mb-4 leading-relaxed">
-            Optimize a Warren truss bridge across a 120-meter river canyon. Use triangular geometry and vector decomposition to balance tension and compression forces under heavy transit cargo loads.
+            Optimize a Warren truss bridge across a 120-meter canyon. Use triangular geometry to balance tension and compression forces under heavy freight.
           </p>
 
           <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-2 mb-4 text-xs font-mono">
@@ -1314,10 +955,6 @@
               <span id="label-bridge-angle" class="text-purple-300 font-bold">60° (Equilateral)</span>
             </div>
             <input type="range" id="slider-bridge-angle" min="30" max="75" step="5" value="60" oninput="calculateBridgeMission()" class="w-full accent-purple-500">
-            <div class="flex justify-between">
-              <span class="text-slate-400">Simulated Load:</span>
-              <span class="text-cyan-300 font-bold">85 Metric Tons</span>
-            </div>
           </div>
           <div id="bridge-status" class="text-xs font-bold px-3 py-2 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-center">
             ✓ Factor of Safety: 2.4 (Passed)
@@ -1335,7 +972,6 @@
   <section id="progress" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
     <div class="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800">
       
-      <!-- User Profile Header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-800 gap-4">
         <div class="flex items-center gap-4">
           <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-3xl shadow-lg shadow-cyan-500/20">
@@ -1352,7 +988,6 @@
           </div>
         </div>
 
-        <!-- Level XP Progress Bar -->
         <div class="w-full sm:w-64">
           <div class="flex justify-between text-xs font-semibold mb-1">
             <span class="text-slate-400">Level Progress</span>
@@ -1365,71 +1000,62 @@
         </div>
       </div>
 
-      <!-- Metric Stat Counters -->
-      <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 py-6 border-b border-slate-800">
-        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-center">
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 py-6 border-b border-slate-800 text-center">
+        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
           <div class="text-2xl font-extrabold text-amber-400 font-mono" id="stat-xp">450</div>
           <div class="text-xs text-slate-400 mt-1">STEM XP</div>
         </div>
-        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-center">
+        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
           <div class="text-2xl font-extrabold text-cyan-400 font-mono" id="stat-labs">2</div>
           <div class="text-xs text-slate-400 mt-1">Labs Completed</div>
         </div>
-        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-center">
+        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
           <div class="text-2xl font-extrabold text-emerald-400 font-mono" id="stat-experiments">6</div>
           <div class="text-xs text-slate-400 mt-1">Experiments Run</div>
         </div>
-        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-center">
+        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
           <div class="text-2xl font-extrabold text-purple-400 font-mono" id="stat-questions">8</div>
           <div class="text-xs text-slate-400 mt-1">Questions Solved</div>
         </div>
-        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-center col-span-2 sm:col-span-1">
+        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 col-span-2 sm:col-span-1">
           <div class="text-2xl font-extrabold text-pink-400 font-mono" id="stat-vocab">14</div>
           <div class="text-xs text-slate-400 mt-1">STEM Vocabulary Mastered</div>
         </div>
       </div>
 
-      <!-- Achievement Badges -->
       <div class="pt-6">
         <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-4">Laboratory Achievement Badges</h4>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          
-          <div id="badge-first-lab" class="badge-item p-3.5 rounded-xl bg-slate-900 border border-emerald-500/40 text-center transition">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-center">
+          <div id="badge-first-lab" class="p-3.5 rounded-xl bg-slate-900 border border-emerald-500/40">
             <div class="text-3xl mb-1">🏆</div>
             <div class="text-xs font-bold text-white">First Lab Completed</div>
             <div class="text-[10px] text-emerald-400 mt-1">Unlocked</div>
           </div>
-
-          <div id="badge-physics" class="badge-item p-3.5 rounded-xl bg-slate-900 border border-amber-500/40 text-center transition">
+          <div id="badge-physics" class="p-3.5 rounded-xl bg-slate-900 border border-amber-500/40">
             <div class="text-3xl mb-1">⚡</div>
             <div class="text-xs font-bold text-white">Physics Explorer</div>
             <div class="text-[10px] text-amber-400 mt-1">Unlocked</div>
           </div>
-
-          <div id="badge-chem" class="badge-item p-3.5 rounded-xl bg-slate-900 border border-emerald-500/40 text-center transition">
+          <div id="badge-chem" class="p-3.5 rounded-xl bg-slate-900 border border-emerald-500/40">
             <div class="text-3xl mb-1">🧪</div>
             <div class="text-xs font-bold text-white">Chemistry Master</div>
             <div class="text-[10px] text-emerald-400 mt-1">Unlocked</div>
           </div>
-
-          <div id="badge-math" class="badge-item p-3.5 rounded-xl bg-slate-900/40 border border-slate-800 opacity-60 text-center transition">
+          <div id="badge-math" class="p-3.5 rounded-xl bg-slate-900/40 border border-slate-800 opacity-60">
             <div class="text-3xl mb-1">📐</div>
             <div class="text-xs font-bold text-slate-300">Math Genius</div>
             <div class="text-[10px] text-slate-500 mt-1">In Progress</div>
           </div>
-
-          <div id="badge-calc" class="badge-item p-3.5 rounded-xl bg-slate-900/40 border border-slate-800 opacity-60 text-center transition">
+          <div id="badge-calc" class="p-3.5 rounded-xl bg-slate-900/40 border border-slate-800 opacity-60">
             <div class="text-3xl mb-1">∫</div>
             <div class="text-xs font-bold text-slate-300">Calculus Challenger</div>
             <div class="text-[10px] text-slate-500 mt-1">In Progress</div>
           </div>
-
-          <div id="badge-solver" class="badge-item p-3.5 rounded-xl bg-slate-900/40 border border-slate-800 opacity-60 text-center transition">
+          <div id="badge-solver" class="p-3.5 rounded-xl bg-slate-900/40 border border-slate-800 opacity-60">
             <div class="text-3xl mb-1">🌎</div>
             <div class="text-xs font-bold text-slate-300">STEM Problem Solver</div>
             <div class="text-[10px] text-slate-500 mt-1">Locked</div>
           </div>
-
         </div>
       </div>
 
@@ -1438,7 +1064,6 @@
 
   <section id="teacher-section" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto hidden">
     <div class="glass-panel rounded-2xl p-6 sm:p-8 border border-indigo-500/40 shadow-2xl">
-      
       <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-slate-800 gap-4">
         <div>
           <div class="inline-flex items-center gap-2 text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
@@ -1453,58 +1078,52 @@
         </button>
       </div>
 
-      <!-- Cohort Class Overview Table -->
-      <div class="mt-6">
-        <h3 class="text-sm font-bold text-white mb-3">Active Student Cohort: Grade 10 Bilingual Science</h3>
-        <div class="overflow-x-auto rounded-xl border border-slate-800">
-          <table class="w-full text-left text-xs">
-            <thead class="bg-slate-900 text-slate-400 border-b border-slate-800">
-              <tr>
-                <th class="p-3">Student Name</th>
-                <th class="p-3">Primary Language</th>
-                <th class="p-3">Labs Completed</th>
-                <th class="p-3">Quiz Accuracy</th>
-                <th class="p-3">Bilingual Vocab Used</th>
-                <th class="p-3">Status</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-800/60 font-sans text-slate-200 bg-slate-950/60">
-              <tr>
-                <td class="p-3 font-semibold text-white">Sofia Morales</td>
-                <td class="p-3 text-slate-400">Spanish / English</td>
-                <td class="p-3 text-cyan-400 font-mono">4 / 4</td>
-                <td class="p-3 text-emerald-400 font-mono">95%</td>
-                <td class="p-3 text-purple-300 font-mono">18 terms</td>
-                <td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">Ahead</span></td>
-              </tr>
-              <tr>
-                <td class="p-3 font-semibold text-white">Mateo Ramirez</td>
-                <td class="p-3 text-slate-400">Spanish / English</td>
-                <td class="p-3 text-cyan-400 font-mono">3 / 4</td>
-                <td class="p-3 text-emerald-400 font-mono">88%</td>
-                <td class="p-3 text-purple-300 font-mono">14 terms</td>
-                <td class="p-3"><span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 text-[10px] font-bold">On Track</span></td>
-              </tr>
-              <tr>
-                <td class="p-3 font-semibold text-white">Camila Alvarez</td>
-                <td class="p-3 text-slate-400">Spanish / English</td>
-                <td class="p-3 text-cyan-400 font-mono">2 / 4</td>
-                <td class="p-3 text-amber-400 font-mono">75%</td>
-                <td class="p-3 text-purple-300 font-mono">9 terms</td>
-                <td class="p-3"><span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold">Needs Support</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="mt-6 overflow-x-auto rounded-xl border border-slate-800">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-900 text-slate-400 border-b border-slate-800">
+            <tr>
+              <th class="p-3">Student Name</th>
+              <th class="p-3">Primary Language</th>
+              <th class="p-3">Labs Completed</th>
+              <th class="p-3">Quiz Accuracy</th>
+              <th class="p-3">Bilingual Vocab Used</th>
+              <th class="p-3">Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60 font-sans text-slate-200 bg-slate-950/60">
+            <tr>
+              <td class="p-3 font-semibold text-white">Sofia Morales</td>
+              <td class="p-3 text-slate-400">Spanish / English</td>
+              <td class="p-3 text-cyan-400 font-mono">4 / 4</td>
+              <td class="p-3 text-emerald-400 font-mono">95%</td>
+              <td class="p-3 text-purple-300 font-mono">18 terms</td>
+              <td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">Ahead</span></td>
+            </tr>
+            <tr>
+              <td class="p-3 font-semibold text-white">Mateo Ramirez</td>
+              <td class="p-3 text-slate-400">Spanish / English</td>
+              <td class="p-3 text-cyan-400 font-mono">3 / 4</td>
+              <td class="p-3 text-emerald-400 font-mono">88%</td>
+              <td class="p-3 text-purple-300 font-mono">14 terms</td>
+              <td class="p-3"><span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 text-[10px] font-bold">On Track</span></td>
+            </tr>
+            <tr>
+              <td class="p-3 font-semibold text-white">Camila Alvarez</td>
+              <td class="p-3 text-slate-400">Spanish / English</td>
+              <td class="p-3 text-cyan-400 font-mono">2 / 4</td>
+              <td class="p-3 text-amber-400 font-mono">75%</td>
+              <td class="p-3 text-purple-300 font-mono">9 terms</td>
+              <td class="p-3"><span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold">Needs Support</span></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-
     </div>
   </section>
 
+  <!-- Final Inspiring Quote -->
   <section class="py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto text-center relative">
     <div class="glass-panel p-8 sm:p-12 rounded-3xl border border-cyan-500/30 relative overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-emerald-500/10 pointer-events-none"></div>
-      
       <div class="text-3xl mb-3">🌌</div>
       <blockquote class="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-4 leading-snug">
         “STEM is not just about knowing the answer.<br>
@@ -1534,7 +1153,7 @@
         <span>Learn, Experiment, Connect</span>
       </div>
       <div>
-        Designed for Bilingual STEM Education • All simulations run client-side in English with Spanish scaffolding
+        Designed for Bilingual STEM Education • Client-side simulation with academic English scaffolding
       </div>
       <div class="text-slate-400">
         © 2026 Bilingual STEM Laboratory
@@ -1542,9 +1161,9 @@
     </div>
   </footer>
 
+  <!-- Bilingual Glossary Modal -->
   <div id="modal-glossary" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="glass-panel w-full max-w-2xl rounded-2xl p-6 border border-cyan-500/40 max-h-[85vh] flex flex-col relative animate-scaleUp">
-      
+    <div class="glass-panel w-full max-w-2xl rounded-2xl p-6 border border-cyan-500/40 max-h-[85vh] flex flex-col relative">
       <div class="flex items-center justify-between pb-4 border-b border-slate-800">
         <div class="flex items-center gap-2">
           <span class="text-2xl">🌐</span>
@@ -1556,15 +1175,11 @@
         <button onclick="toggleGlossaryModal(false)" class="text-slate-400 hover:text-white p-2 rounded-lg text-lg">✕</button>
       </div>
 
-      <!-- Search Input Filter -->
       <div class="py-3">
         <input type="text" id="glossary-search" oninput="filterGlossary()" placeholder="Search terms (e.g. acceleration, derivative, pH, slope)..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">
       </div>
 
-      <!-- Scrollable List of Bilingual Terms -->
-      <div id="glossary-terms-container" class="overflow-y-auto space-y-3 pr-1 divide-y divide-slate-800/60 no-scrollbar flex-1">
-        <!-- Rendered via JavaScript -->
-      </div>
+      <div id="glossary-terms-container" class="overflow-y-auto space-y-3 pr-1 divide-y divide-slate-800/60 no-scrollbar flex-1"></div>
 
       <div class="pt-4 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between items-center">
         <span>💡 Tip: Write your scientific conclusions in English using these terms.</span>
@@ -1575,6 +1190,7 @@
     </div>
   </div>
 
+  <!-- Assign Lab Modal -->
   <div id="modal-assign" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="glass-panel w-full max-w-md rounded-2xl p-6 border border-indigo-500/40 space-y-4">
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
@@ -1603,11 +1219,6 @@
         </select>
       </div>
 
-      <div>
-        <label class="block text-xs font-semibold text-slate-300 mb-1">Due Date & Instructions:</label>
-        <input type="text" value="Friday: Complete 8-Step Report & Vocabulary Log" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white">
-      </div>
-
       <div class="flex justify-end gap-2 pt-2">
         <button onclick="closeAssignModal()" class="px-3 py-2 rounded-lg bg-slate-800 text-slate-300 text-xs">Cancel</button>
         <button onclick="dispatchLabAssignment()" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs">
@@ -1618,7 +1229,6 @@
   </div>
 
   <script>
-    // State Store
     const STEM_STATE = {
       xp: 450,
       level: '🔬 STEM Explorer',
@@ -1627,219 +1237,41 @@
       questionsSolved: 8,
       vocabMastered: 14,
       currentLab: 'physics',
-      hypotheses: {
-        physics: '',
-        chemistry: '',
-        math: '',
-        calculus: ''
-      },
-      conclusions: {
-        physics: '',
-        chemistry: '',
-        math: '',
-        calculus: ''
-      },
-      physics: {
-        mass: 5,
-        gravity: 9.8,
-        height: 45,
-        isDropping: false,
-        dropProgress: 0,
-        trials: []
-      },
-      chemistry: {
-        currentChemical: 'water',
-        ph: 7.00,
-        substanceName: 'Pure Water',
-        acidDrops: 0,
-        baseDrops: 0,
-        records: []
-      },
-      math: {
-        m: 1.0,
-        b: 0.0,
-        records: []
-      },
-      calculus: {
-        x: 1.5,
-        records: []
-      }
+      hypotheses: { physics: '', chemistry: '', math: '', calculus: '' },
+      conclusions: { physics: '', chemistry: '', math: '', calculus: '' },
+      physics: { mass: 5, gravity: 9.8, height: 45, isDropping: false, dropProgress: 0, trials: [] },
+      chemistry: { currentChemical: 'water', ph: 7.00, substanceName: 'Pure Water', records: [] },
+      math: { m: 1.0, b: 0.0, records: [] },
+      calculus: { x: 1.5, records: [] }
     };
 
-    // Bilingual Academic Vocabulary Database
     const VOCAB_DATABASE = {
-      velocity: {
-        en: 'Velocity',
-        es: 'Velocidad',
-        ipa: '/vəˈlɒsɪti/',
-        def: 'The speed of an object in a specific direction (vector quantity, measured in m/s).',
-        sentence: 'When dropped from greater heights, the object hits the ground with higher velocity.'
-      },
-      acceleration: {
-        en: 'Acceleration',
-        es: 'Aceleración',
-        ipa: '/əkˌsɛləˈreɪʃən/',
-        def: 'The rate of change of velocity per unit of time (measured in m/s²).',
-        sentence: 'Gravity causes all free-falling objects to undergo uniform downward acceleration.'
-      },
-      force: {
-        en: 'Force',
-        es: 'Fuerza',
-        ipa: '/fɔːrs/',
-        def: 'An interaction that causes an object with mass to change its velocity (F = m · a).',
-        sentence: 'The gravitational force pulls masses toward planetary centers.'
-      },
-      gravity: {
-        en: 'Gravity',
-        es: 'Gravedad',
-        ipa: '/ˈɡrævɪti/',
-        def: 'The fundamental force of mutual attraction between masses in the universe.',
-        sentence: 'Earth has a surface gravity of approximately 9.8 m/s².'
-      },
-      mass: {
-        en: 'Mass',
-        es: 'Masa',
-        ipa: '/mæs/',
-        def: 'A quantitative measure of an object’s resistance to acceleration (inertia) and amount of matter.',
-        sentence: 'Even when mass increases, the acceleration due to gravity in a vacuum remains identical.'
-      },
-      distance: {
-        en: 'Distance',
-        es: 'Distancia',
-        ipa: '/ˈdɪstəns/',
-        def: 'The scalar measure of the interval or path length between two physical locations.',
-        sentence: 'The distance fallen increases quadratically with elapsed time: d = 1/2 · g · t².'
-      },
-      ph: {
-        en: 'pH Scale',
-        es: 'Escala de pH',
-        ipa: '/piː eɪtʃ/',
-        def: 'A logarithmic measure of the hydronium ion concentration [H₃O⁺] in an aqueous solution.',
-        sentence: 'A solution with a pH lower than 7 is acidic, whereas above 7 is basic.'
-      },
-      acid: {
-        en: 'Acid',
-        es: 'Ácido',
-        ipa: '/ˈæsɪd/',
-        def: 'A chemical compound that donates protons (H⁺) and yields a pH below 7.',
-        sentence: 'Lemon juice contains citric acid, giving it a measured pH of approximately 2.2.'
-      },
-      base: {
-        en: 'Base / Alkaline',
-        es: 'Base / Alcalino',
-        ipa: '/beɪs/',
-        def: 'A chemical substance that accepts protons (or donates OH⁻) with a pH greater than 7.',
-        sentence: 'Sodium hypochlorite in household bleach makes it a potent alkaline base.'
-      },
-      concentration: {
-        en: 'Concentration',
-        es: 'Concentración',
-        ipa: '/ˌkɒnsənˈtreɪʃən/',
-        def: 'The amount of a substance (solute) contained within a given volume of solution (Molarity).',
-        sentence: 'Adding distilled water dilutes the acid and lowers the hydrogen ion concentration.'
-      },
-      solution: {
-        en: 'Solution',
-        es: 'Solución',
-        ipa: '/səˈluːʃən/',
-        def: 'A homogeneous mixture composed of two or more substances (solute dissolved in solvent).',
-        sentence: 'The neutral solution maintained an equilibrium state at 25 degrees Celsius.'
-      },
-      temperature: {
-        en: 'Temperature',
-        es: 'Temperatura',
-        ipa: '/ˈtɛmprətʃər/',
-        def: 'A physical quantity that expresses the degree of hotness or thermal energy of matter.',
-        sentence: 'Chemical dissociation constants vary based on changes in temperature.'
-      },
-      slope: {
-        en: 'Slope',
-        es: 'Pendiente',
-        ipa: '/sloʊp/',
-        def: 'The measure of the steepness and direction of a line (m = rise / run = Δy / Δx).',
-        sentence: 'A positive slope indicates that the dependent variable increases as x increases.'
-      },
-      intercept: {
-        en: 'y-Intercept',
-        es: 'Intersección con y',
-        ipa: '/ˈɪntərsɛpt/',
-        def: 'The point where a graph crosses the vertical y-axis (where x equals 0).',
-        sentence: 'In y = mx + b, parameter b designates the exact y-intercept coordinates.'
-      },
-      function: {
-        en: 'Function',
-        es: 'Función',
-        ipa: '/ˈfʌŋkʃən/',
-        def: 'A mathematical relation that associates each input x with exactly one output f(x).',
-        sentence: 'A linear function forms an unbroken straight line across Cartesian coordinate space.'
-      },
-      algebra: {
-        en: 'Algebra',
-        es: 'Álgebra',
-        ipa: '/ˈældʒɪbrə/',
-        def: 'The branch of mathematics dealing with symbols, variables, and rules for manipulating them.',
-        sentence: 'Algebra allows scientists to generalize physical laws into predictive equations.'
-      },
-      variable: {
-        en: 'Variable',
-        es: 'Variable',
-        ipa: '/ˈvɛəriəbəl/',
-        def: 'A symbol representing an unspecified or changing quantity within an equation.',
-        sentence: 'Time was held as the independent variable on our experimental axis.'
-      },
-      coordinate: {
-        en: 'Coordinate Plane',
-        es: 'Plano Cartesiano',
-        ipa: '/koʊˈɔːrdɪnət pleɪn/',
-        def: 'A two-dimensional grid defined by perpendicular horizontal (x) and vertical (y) axes.',
-        sentence: 'We plotted each ordered pair (x, y) onto the coordinate plane.'
-      },
-      derivative: {
-        en: 'Derivative',
-        es: 'Derivada',
-        ipa: '/dɪˈrɪvətɪv/',
-        def: 'The limit of the average rate of change as the interval approaches zero (instantaneous rate).',
-        sentence: 'The derivative of position with respect to time represents velocity.'
-      },
-      tangent: {
-        en: 'Tangent Line',
-        es: 'Línea Tangente',
-        ipa: '/ˈtændʒənt laɪn/',
-        def: 'A straight line that touches a curve at a single point, matching the instantaneous slope.',
-        sentence: 'The slope of the tangent line reflects f-prime of x at that specific coordinate.'
-      },
-      limit: {
-        en: 'Limit',
-        es: 'Límite',
-        ipa: '/ˈlɪmɪt/',
-        def: 'The value that a function or sequence approaches as the input approaches some point.',
-        sentence: 'Calculus formalizes instantaneous speed through the mathematical concept of a limit.'
-      },
-      rate_of_change: {
-        en: 'Rate of Change',
-        es: 'Razón de Cambio',
-        ipa: '/reɪt ʌv tʃeɪndʒ/',
-        def: 'How one quantity changes in relation to another over a specified interval.',
-        sentence: 'Acceleration measures the exact rate of change of an object’s velocity.'
-      },
-      integral: {
-        en: 'Integral',
-        es: 'Integral',
-        ipa: '/ˈɪntɪɡrəl/',
-        def: 'A mathematical operation representing the accumulation of quantities and area under curves.',
-        sentence: 'The definite integral of the velocity curve calculated total distance traveled.'
-      },
-      continuous: {
-        en: 'Continuous',
-        es: 'Continuo',
-        ipa: '/kənˈtɪnjuəs/',
-        def: 'A function with no gaps, breaks, or jumps throughout its mathematical domain.',
-        sentence: 'Polynomials are continuous functions whose derivatives exist at all points.'
-      }
+      velocity: { en: 'Velocity', es: 'Velocidad', ipa: '/vəˈlɒsɪti/', def: 'The speed of an object in a specific direction (vector quantity, measured in m/s).', sentence: 'When dropped from greater heights, the object hits the ground with higher velocity.' },
+      acceleration: { en: 'Acceleration', es: 'Aceleración', ipa: '/əkˌsɛləˈreɪʃən/', def: 'The rate of change of velocity per unit of time (measured in m/s²).', sentence: 'Gravity causes all free-falling objects to undergo uniform downward acceleration.' },
+      force: { en: 'Force', es: 'Fuerza', ipa: '/fɔːrs/', def: 'An interaction that causes an object with mass to change its velocity (F = m · a).', sentence: 'The gravitational force pulls masses toward planetary centers.' },
+      gravity: { en: 'Gravity', es: 'Gravedad', ipa: '/ˈɡrævɪti/', def: 'The fundamental force of mutual attraction between masses in the universe.', sentence: 'Earth has a surface gravity of approximately 9.8 m/s².' },
+      mass: { en: 'Mass', es: 'Masa', ipa: '/mæs/', def: 'A quantitative measure of an object’s resistance to acceleration (inertia) and amount of matter.', sentence: 'Even when mass increases, the acceleration due to gravity in a vacuum remains identical.' },
+      distance: { en: 'Distance', es: 'Distancia', ipa: '/ˈdɪstəns/', def: 'The scalar measure of the interval or path length between two physical locations.', sentence: 'The distance fallen increases quadratically with elapsed time: d = 1/2 · g · t².' },
+      ph: { en: 'pH Scale', es: 'Escala de pH', ipa: '/piː eɪtʃ/', def: 'A logarithmic measure of the hydronium ion concentration [H₃O⁺] in an aqueous solution.', sentence: 'A solution with a pH lower than 7 is acidic, whereas above 7 is basic.' },
+      acid: { en: 'Acid', es: 'Ácido', ipa: '/ˈæsɪd/', def: 'A chemical compound that donates protons (H⁺) and yields a pH below 7.', sentence: 'Lemon juice contains citric acid, giving it a measured pH of approximately 2.2.' },
+      base: { en: 'Base / Alkaline', es: 'Base / Alcalino', ipa: '/beɪs/', def: 'A chemical substance that accepts protons (or donates OH⁻) with a pH greater than 7.', sentence: 'Sodium hypochlorite in household bleach makes it a potent alkaline base.' },
+      concentration: { en: 'Concentration', es: 'Concentración', ipa: '/ˌkɒnsənˈtreɪʃən/', def: 'The amount of a substance (solute) contained within a given volume of solution (Molarity).', sentence: 'Adding distilled water dilutes the acid and lowers the hydrogen ion concentration.' },
+      solution: { en: 'Solution', es: 'Solución', ipa: '/səˈluːʃən/', def: 'A homogeneous mixture composed of two or more substances.', sentence: 'The neutral solution maintained an equilibrium state at 25 degrees Celsius.' },
+      temperature: { en: 'Temperature', es: 'Temperatura', ipa: '/ˈtɛmprətʃər/', def: 'A physical quantity that expresses thermal energy of matter.', sentence: 'Chemical dissociation constants vary based on changes in temperature.' },
+      slope: { en: 'Slope', es: 'Pendiente', ipa: '/sloʊp/', def: 'The measure of the steepness and direction of a line (m = rise / run = Δy / Δx).', sentence: 'A positive slope indicates that the dependent variable increases as x increases.' },
+      intercept: { en: 'y-Intercept', es: 'Intersección con y', ipa: '/ˈɪntərsɛpt/', def: 'The point where a graph crosses the vertical y-axis (where x equals 0).', sentence: 'In y = mx + b, parameter b designates the exact y-intercept coordinates.' },
+      function: { en: 'Function', es: 'Función', ipa: '/ˈfʌŋkʃən/', def: 'A mathematical relation that associates each input x with exactly one output f(x).', sentence: 'A linear function forms an unbroken straight line across Cartesian coordinate space.' },
+      algebra: { en: 'Algebra', es: 'Álgebra', ipa: '/ˈældʒɪbrə/', def: 'The branch of mathematics dealing with symbols, variables, and rules for manipulating them.', sentence: 'Algebra allows scientists to generalize physical laws into predictive equations.' },
+      variable: { en: 'Variable', es: 'Variable', ipa: '/ˈvɛəriəbəl/', def: 'A symbol representing an unspecified or changing quantity within an equation.', sentence: 'Time was held as the independent variable on our experimental axis.' },
+      coordinate: { en: 'Coordinate Plane', es: 'Plano Cartesiano', ipa: '/koʊˈɔːrdɪnət pleɪn/', def: 'A two-dimensional grid defined by perpendicular horizontal (x) and vertical (y) axes.', sentence: 'We plotted each ordered pair (x, y) onto the coordinate plane.' },
+      derivative: { en: 'Derivative', es: 'Derivada', ipa: '/dɪˈrɪvətɪv/', def: 'The limit of the average rate of change as the interval approaches zero.', sentence: 'The derivative of position with respect to time represents velocity.' },
+      tangent: { en: 'Tangent Line', es: 'Línea Tangente', ipa: '/ˈtændʒənt laɪn/', def: 'A straight line that touches a curve at a single point, matching the instantaneous slope.', sentence: 'The slope of the tangent line reflects f-prime of x at that specific coordinate.' },
+      limit: { en: 'Limit', es: 'Límite', ipa: '/ˈlɪmɪt/', def: 'The value that a function or sequence approaches as the input approaches some point.', sentence: 'Calculus formalizes instantaneous speed through the mathematical concept of a limit.' },
+      rate_of_change: { en: 'Rate of Change', es: 'Razón de Cambio', ipa: '/reɪt ʌv tʃeɪndʒ/', def: 'How one quantity changes in relation to another over a specified interval.', sentence: 'Acceleration measures the exact rate of change of an object’s velocity.' },
+      integral: { en: 'Integral', es: 'Integral', ipa: '/ˈɪntɪɡrəl/', def: 'A mathematical operation representing the accumulation of quantities and area under curves.', sentence: 'The definite integral of the velocity curve calculated total distance traveled.' },
+      continuous: { en: 'Continuous', es: 'Continuo', ipa: '/kənˈtɪnjuəs/', def: 'A function with no gaps, breaks, or jumps throughout its mathematical domain.', sentence: 'Polynomials are continuous functions whose derivatives exist at all points.' }
     };
-  </script>
 
-  <script>
     function showToast(message, type = 'success') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -1861,30 +1293,22 @@
       setTimeout(() => {
         toast.classList.add('opacity-0', 'translate-y-2');
         setTimeout(() => toast.remove(), 300);
-      }, 4200);
+      }, 4000);
     }
 
     function addXP(amount, reason = '') {
       STEM_STATE.xp += amount;
       SoundEngine.success();
       
-      // Update Level Titles
-      if (STEM_STATE.xp >= 1500) {
-        STEM_STATE.level = '🚀 STEM Innovator';
-      } else if (STEM_STATE.xp >= 1100) {
-        STEM_STATE.level = '📐 STEM Mathematician';
-      } else if (STEM_STATE.xp >= 800) {
-        STEM_STATE.level = '🧪 STEM Scientist';
-      } else if (STEM_STATE.xp >= 500) {
-        STEM_STATE.level = '⚡ STEM Engineer';
-      }
+      if (STEM_STATE.xp >= 1500) STEM_STATE.level = '🚀 STEM Innovator';
+      else if (STEM_STATE.xp >= 1100) STEM_STATE.level = '📐 STEM Mathematician';
+      else if (STEM_STATE.xp >= 800) STEM_STATE.level = '🧪 STEM Scientist';
+      else if (STEM_STATE.xp >= 500) STEM_STATE.level = '⚡ STEM Engineer';
 
-      // Update counters in DOM
       document.getElementById('nav-xp-counter').textContent = STEM_STATE.xp;
       document.getElementById('stat-xp').textContent = STEM_STATE.xp;
       document.getElementById('level-badge').textContent = STEM_STATE.level;
 
-      // Update progress bar
       const maxLvlXP = 800;
       const pct = Math.min(100, Math.round((STEM_STATE.xp / maxLvlXP) * 100));
       document.getElementById('progress-bar-fill').style.width = pct + '%';
@@ -1892,36 +1316,30 @@
 
       showToast(`+${amount} XP Earned! ${reason}`);
     }
-  </script>
 
-  <script>
     const LAB_TITLES = {
       physics: {
         title: 'How Does Gravity Affect Falling Objects?',
         subject: 'PHYSICS LAB',
         icon: '⚡',
-        theme: 'amber',
         terms: ['velocity', 'acceleration', 'force', 'gravity', 'mass', 'distance']
       },
       chemistry: {
         title: 'Virtual pH Lab: Acids, Bases, & Ionic Dissociation',
         subject: 'CHEMISTRY LAB',
         icon: '🧪',
-        theme: 'emerald',
         terms: ['ph', 'acid', 'base', 'concentration', 'solution', 'temperature']
       },
       math: {
         title: 'Build the Equation: Slope-Intercept Exploration (y = mx + b)',
         subject: 'MATHEMATICS LAB',
         icon: '📐',
-        theme: 'purple',
         terms: ['slope', 'intercept', 'function', 'algebra', 'variable', 'coordinate']
       },
       calculus: {
         title: 'Derivative Explorer: Tangent Lines & Rates of Change',
         subject: 'CALCULUS LAB',
         icon: '∫',
-        theme: 'pink',
         terms: ['derivative', 'tangent', 'limit', 'rate_of_change', 'integral', 'continuous']
       }
     };
@@ -1930,7 +1348,6 @@
       SoundEngine.click();
       STEM_STATE.currentLab = tabKey;
       
-      // Update Tab Buttons UI
       document.querySelectorAll('.lab-tab-btn').forEach(btn => {
         btn.className = 'lab-tab-btn px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2 text-slate-400 hover:text-white';
       });
@@ -1942,18 +1359,15 @@
         if (tabKey === 'calculus') activeBtn.className = 'lab-tab-btn px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2 bg-pink-500/20 text-pink-300 border border-pink-500/40';
       }
 
-      // Hide all lab modules, show target
       document.querySelectorAll('.lab-module-container').forEach(el => el.classList.add('hidden'));
       const activeModule = document.getElementById(`lab-view-${tabKey}`);
       if (activeModule) activeModule.classList.remove('hidden');
 
-      // Update Top Header Information
       const info = LAB_TITLES[tabKey];
       document.getElementById('lab-title').textContent = info.title;
       document.getElementById('lab-badge-subject').textContent = info.subject;
       document.getElementById('lab-hero-icon').textContent = info.icon;
 
-      // Populate Quick Academic Term Pills
       const termContainer = document.getElementById('lab-quick-terms');
       termContainer.innerHTML = '';
       info.terms.forEach(k => {
@@ -1967,7 +1381,6 @@
         }
       });
 
-      // Canvas Redraw triggers
       setTimeout(() => {
         if (tabKey === 'physics') { drawPhysicsScene(); drawPhysicsGraph(); }
         if (tabKey === 'chemistry') { drawChemistryGraph(); }
@@ -2001,15 +1414,13 @@
       feedback.classList.remove('hidden');
       addXP(50, 'Completed Scientific Inquiry Conclusion');
 
-      // Update labs completed count
       STEM_STATE.labsCompleted++;
       document.getElementById('stat-labs').textContent = STEM_STATE.labsCompleted;
-      document.getElementById('badge-first-lab').classList.add('border-emerald-400', 'bg-emerald-950/30');
     }
 
     function checkAnalysisQuiz(labKey) {
       SoundEngine.click();
-      let isCorrect = true;
+      let isCorrect = false;
       let feedbackEl;
 
       if (labKey === 'physics') {
@@ -2022,34 +1433,6 @@
           return;
         }
         isCorrect = (q1.value === 'correct' && q2.value === 'correct');
-      } else if (labKey === 'chemistry') {
-        feedbackEl = document.getElementById('chem-quiz-feedback');
-        const q1 = document.querySelector('input[name="chem-q1"]:checked');
-        const q2 = document.querySelector('input[name="chem-q2"]:checked');
-        if (!q1 || !q2) {
-          feedbackEl.className = 'text-xs text-amber-400 font-semibold';
-          feedbackEl.textContent = 'Please answer all questions.';
-          return;
-        }
-        isCorrect = (q1.value === 'correct' && q2.value === 'correct');
-      } else if (labKey === 'math') {
-        feedbackEl = document.getElementById('math-quiz-feedback');
-        const q1 = document.querySelector('input[name="math-q1"]:checked');
-        if (!q1) {
-          feedbackEl.className = 'text-xs text-amber-400 font-semibold';
-          feedbackEl.textContent = 'Please select an answer.';
-          return;
-        }
-        isCorrect = (q1.value === 'correct');
-      } else if (labKey === 'calculus') {
-        feedbackEl = document.getElementById('calc-quiz-feedback');
-        const q1 = document.querySelector('input[name="calc-q1"]:checked');
-        if (!q1) {
-          feedbackEl.className = 'text-xs text-amber-400 font-semibold';
-          feedbackEl.textContent = 'Please select an answer.';
-          return;
-        }
-        isCorrect = (q1.value === 'correct');
       }
 
       if (isCorrect) {
@@ -2064,9 +1447,7 @@
         SoundEngine.fail();
       }
     }
-  </script>
 
-  <script>
     let physAnimId = null;
 
     function updatePhysicsParams() {
@@ -2099,8 +1480,8 @@
 
       STEM_STATE.physics.isDropping = true;
       const startTime = performance.now();
-      const totalTime = Math.sqrt((2 * height) / gravity); // t = sqrt(2h/g)
-      const finalVelocity = gravity * totalTime; // v = gt
+      const totalTime = Math.sqrt((2 * height) / gravity);
+      const finalVelocity = gravity * totalTime;
 
       function step(now) {
         const elapsedSec = (now - startTime) / 1000;
@@ -2144,17 +1525,15 @@
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * window.devicePixelRatio;
-      canvas.height = rect.height * window.devicePixelRatio;
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      if (!rect.width || !rect.height) return;
+      canvas.width = rect.width;
+      canvas.height = rect.height;
 
       const w = rect.width;
       const h = rect.height;
-
-      // Clear Canvas Background
       ctx.clearRect(0, 0, w, h);
 
-      // Height Reference Scale on Left
+      // Height Reference Scale
       ctx.strokeStyle = 'rgba(148, 163, 184, 0.2)';
       ctx.lineWidth = 1;
       ctx.fillStyle = '#64748b';
@@ -2176,24 +1555,12 @@
       ctx.fillStyle = '#10b981';
       ctx.fillRect(40, h - 35, w - 80, 2);
 
-      // Dropping Object Position
       const dropStartY = 35;
       const dropEndY = h - 55;
       const currentY = dropStartY + STEM_STATE.physics.dropProgress * (dropEndY - dropStartY);
       const centerX = w / 2;
 
-      // Motion Trail
-      if (STEM_STATE.physics.dropProgress > 0) {
-        ctx.strokeStyle = 'rgba(245, 158, 11, 0.3)';
-        ctx.setLineDash([4, 4]);
-        ctx.beginPath();
-        ctx.moveTo(centerX, dropStartY);
-        ctx.lineTo(centerX, currentY);
-        ctx.stroke();
-        ctx.setLineDash([]);
-      }
-
-      // Ball / Sphere Mass Representation
+      // Ball / Mass
       const radius = 10 + (STEM_STATE.physics.mass / 25) * 14;
       const grad = ctx.createRadialGradient(centerX - 4, currentY - 4, 2, centerX, currentY, radius);
       grad.addColorStop(0, '#fef08a');
@@ -2203,12 +1570,8 @@
       ctx.beginPath();
       ctx.arc(centerX, currentY, radius, 0, Math.PI * 2);
       ctx.fillStyle = grad;
-      ctx.shadowColor = 'rgba(245, 158, 11, 0.5)';
-      ctx.shadowBlur = 15;
       ctx.fill();
-      ctx.shadowBlur = 0;
 
-      // Label on Sphere
       ctx.fillStyle = '#000';
       ctx.font = 'bold 9px sans-serif';
       ctx.textAlign = 'center';
@@ -2251,15 +1614,14 @@
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * window.devicePixelRatio;
-      canvas.height = rect.height * window.devicePixelRatio;
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      if (!rect.width || !rect.height) return;
+      canvas.width = rect.width;
+      canvas.height = rect.height;
 
       const w = rect.width;
       const h = rect.height;
       ctx.clearRect(0, 0, w, h);
 
-      // Axes
       ctx.strokeStyle = '#475569';
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -2280,39 +1642,31 @@
         return;
       }
 
-      // Plot experimental points
       const maxT = Math.max(...trials.map(t => parseFloat(t.time)), 5);
       const maxV = Math.max(...trials.map(t => parseFloat(t.velocity)), 40);
 
-      trials.forEach((t, i) => {
+      trials.forEach((t) => {
         const px = 35 + (parseFloat(t.time) / maxT) * (w - 60);
         const py = (h - 25) - (parseFloat(t.velocity) / maxV) * (h - 50);
 
-        // Vector line from origin
         ctx.strokeStyle = 'rgba(56, 189, 248, 0.5)';
         ctx.beginPath();
         ctx.moveTo(35, h - 25);
         ctx.lineTo(px, py);
         ctx.stroke();
 
-        // Node Point
         ctx.fillStyle = '#f59e0b';
         ctx.beginPath();
         ctx.arc(px, py, 4, 0, Math.PI * 2);
         ctx.fill();
-
-        ctx.fillStyle = '#fff';
-        ctx.fillText(`T${t.trialNum}`, px - 6, py - 8);
       });
     }
-  </script>
 
-  <script>
     const CHEMICALS = {
-      lemon: { name: 'Lemon Juice', ph: 2.2, color: 'rgba(234, 179, 8, 0.75)', desc: 'Contains citric acid (C₆H₈O₇), yielding a high hydronium concentration [H⁺].', type: 'ACIDIC' },
-      coffee: { name: 'Black Coffee', ph: 5.0, color: 'rgba(120, 53, 15, 0.75)', desc: 'Mildly acidic brew containing chlorogenic acids and dissolved organic compounds.', type: 'ACIDIC' },
-      water: { name: 'Pure Water (H₂O)', ph: 7.0, color: 'rgba(56, 189, 248, 0.45)', desc: 'Equal equilibrium between [H⁺] and [OH⁻] at standard 25°C room temperature.', type: 'NEUTRAL' },
-      soap: { name: 'Hand Soap Solution', ph: 9.5, color: 'rgba(168, 85, 247, 0.65)', desc: 'Fatty acid sodium salts yielding basic alkaline solutions that emulsify oils.', type: 'BASIC' },
+      lemon: { name: 'Lemon Juice', ph: 2.2, color: 'rgba(234, 179, 8, 0.75)', desc: 'Citric acid (C₆H₈O₇) yields high hydronium concentration [H⁺].', type: 'ACIDIC' },
+      coffee: { name: 'Black Coffee', ph: 5.0, color: 'rgba(120, 53, 15, 0.75)', desc: 'Mildly acidic solution with dissolved organic chlorogenic acids.', type: 'ACIDIC' },
+      water: { name: 'Pure Water (H₂O)', ph: 7.0, color: 'rgba(56, 189, 248, 0.45)', desc: 'Equal equilibrium between [H⁺] and [OH⁻] at standard 25°C.', type: 'NEUTRAL' },
+      soap: { name: 'Hand Soap Solution', ph: 9.5, color: 'rgba(168, 85, 247, 0.65)', desc: 'Fatty acid sodium salts yielding basic alkaline solutions.', type: 'BASIC' },
       bleach: { name: 'Household Bleach', ph: 12.5, color: 'rgba(99, 102, 241, 0.75)', desc: 'Sodium hypochlorite (NaClO) is a strong base with extremely low [H⁺].', type: 'STRONG BASE' },
       hcl: { name: 'Hydrochloric Acid', ph: 1.0, color: 'rgba(239, 68, 68, 0.8)', desc: 'Strong inorganic mineral acid that completely dissociates in water.', type: 'STRONG ACID' }
     };
@@ -2326,7 +1680,6 @@
       STEM_STATE.chemistry.ph = chem.ph;
       STEM_STATE.chemistry.substanceName = chem.name;
 
-      // Update button visual states
       document.querySelectorAll('.chem-select-btn').forEach(btn => {
         btn.classList.remove('border-emerald-400', 'bg-emerald-950/40');
       });
@@ -2377,7 +1730,6 @@
       const pill = document.getElementById('chem-status-pill');
       pill.textContent = data.type;
 
-      // Position needle on 0-14 bar (0% to 100%)
       const needle = document.getElementById('ph-needle-indicator');
       const pct = (data.ph / 14) * 100;
       needle.style.left = `${pct}%`;
@@ -2399,27 +1751,16 @@
       if (ph > 7) classification = 'Basic / Alkaline';
 
       const hConc = Math.pow(10, -ph).toExponential(2) + ' M';
-
-      const record = { name, ph: ph.toFixed(2), classification, hConc };
-      STEM_STATE.chemistry.records.push(record);
-      STEM_STATE.experimentsRun++;
-      document.getElementById('stat-experiments').textContent = STEM_STATE.experimentsRun;
-
       const tbody = document.getElementById('chem-data-body');
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td class="p-2 text-white font-semibold">${record.name}</td>
-        <td class="p-2 text-emerald-400 font-bold">${record.ph}</td>
-        <td class="p-2">${record.classification}</td>
-        <td class="p-2 text-slate-400">${record.hConc}</td>
+        <td class="p-2 text-white font-semibold">${name}</td>
+        <td class="p-2 text-emerald-400 font-bold">${ph.toFixed(2)}</td>
+        <td class="p-2">${classification}</td>
+        <td class="p-2 text-slate-400">${hConc}</td>
       `;
       tbody.prepend(tr);
-
       addXP(25, 'Recorded Chemical Measurement');
-    }
-
-    function clearChemData() {
-      document.getElementById('chem-data-body').innerHTML = '';
     }
 
     function drawChemistryGraph() {
@@ -2427,15 +1768,14 @@
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * window.devicePixelRatio;
-      canvas.height = rect.height * window.devicePixelRatio;
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      if (!rect.width || !rect.height) return;
+      canvas.width = rect.width;
+      canvas.height = rect.height;
 
       const w = rect.width;
       const h = rect.height;
       ctx.clearRect(0, 0, w, h);
 
-      // Axes
       ctx.strokeStyle = '#475569';
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -2449,36 +1789,19 @@
       ctx.fillText('pH Value', 5, 20);
       ctx.fillText('-log[H⁺]', w - 50, h - 8);
 
-      // Curve of pH relationship
       ctx.strokeStyle = '#10b981';
       ctx.lineWidth = 2;
       ctx.beginPath();
       for (let x = 40; x <= w - 20; x++) {
-        const norm = (x - 40) / (w - 60); // 0 to 1
+        const norm = (x - 40) / (w - 60);
         const phVal = norm * 14;
         const y = (h - 25) - (phVal / 14) * (h - 45);
         if (x === 40) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       }
       ctx.stroke();
-
-      // Current sample highlight point
-      const currentPh = STEM_STATE.chemistry.ph;
-      const ptX = 40 + (currentPh / 14) * (w - 60);
-      const ptY = (h - 25) - (currentPh / 14) * (h - 45);
-
-      ctx.fillStyle = '#f43f5e';
-      ctx.beginPath();
-      ctx.arc(ptX, ptY, 5, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 10px monospace';
-      ctx.fillText(`Current: ${currentPh.toFixed(1)} pH`, ptX - 35, ptY - 10);
     }
-  </script>
 
-  <script>
     function updateMathPlot() {
       const m = parseFloat(document.getElementById('math-slider-m').value);
       const b = parseFloat(document.getElementById('math-slider-b').value);
@@ -2490,13 +1813,8 @@
 
       const sign = b >= 0 ? '+' : '-';
       document.getElementById('math-formula-display').textContent = `y = ${m.toFixed(2)}x ${sign} ${Math.abs(b).toFixed(2)}`;
-      document.getElementById('math-intercept-coord').textContent = `(0, ${b.toFixed(2)})`;
-
-      const root = m !== 0 ? (-b / m).toFixed(2) : 'Undefined (Parallel)';
-      document.getElementById('math-root-coord').textContent = m !== 0 ? `(${root}, 0)` : 'None';
 
       drawMathCanvas(m, b);
-      populateMathTable(m, b);
     }
 
     function drawMathCanvas(m, b) {
@@ -2504,9 +1822,9 @@
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * window.devicePixelRatio;
-      canvas.height = rect.height * window.devicePixelRatio;
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      if (!rect.width || !rect.height) return;
+      canvas.width = rect.width;
+      canvas.height = rect.height;
 
       const w = rect.width;
       const h = rect.height;
@@ -2514,9 +1832,8 @@
 
       const originX = w / 2;
       const originY = h / 2;
-      const scale = 22; // pixels per unit
+      const scale = 22;
 
-      // Grid Lines
       ctx.strokeStyle = 'rgba(51, 65, 85, 0.4)';
       ctx.lineWidth = 1;
       for (let x = originX % scale; x < w; x += scale) {
@@ -2526,7 +1843,6 @@
         ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
       }
 
-      // X and Y Axes
       ctx.strokeStyle = '#64748b';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
@@ -2534,20 +1850,12 @@
       ctx.moveTo(originX, 0); ctx.lineTo(originX, h);
       ctx.stroke();
 
-      // Axis labels
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = '9px monospace';
-      ctx.fillText('+x', w - 18, originY - 6);
-      ctx.fillText('+y', originX + 6, 14);
-
-      // Plot Line: y = mx + b
       ctx.strokeStyle = '#a855f7';
       ctx.lineWidth = 2.5;
       ctx.beginPath();
 
       const xMin = -originX / scale;
       const xMax = (w - originX) / scale;
-
       const y1 = m * xMin + b;
       const y2 = m * xMax + b;
 
@@ -2555,55 +1863,17 @@
       ctx.lineTo(originX + xMax * scale, originY - y2 * scale);
       ctx.stroke();
 
-      // y-intercept dot
       const iy = originY - b * scale;
       ctx.fillStyle = '#38bdf8';
       ctx.beginPath();
       ctx.arc(originX, iy, 5, 0, Math.PI * 2);
       ctx.fill();
-
-      // x-intercept dot if exists
-      if (m !== 0) {
-        const root = -b / m;
-        const rx = originX + root * scale;
-        ctx.fillStyle = '#34d399';
-        ctx.beginPath();
-        ctx.arc(rx, originY, 4, 0, Math.PI * 2);
-        ctx.fill();
-      }
     }
 
-    function populateMathTable(m, b) {
-      const tbody = document.getElementById('math-table-body');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      const sampleX = [-3, -2, -1, 0, 1, 2, 3];
-      sampleX.forEach(x => {
-        const y = (m * x + b).toFixed(2);
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="p-2 font-bold text-slate-300">${x}</td>
-          <td class="p-2 text-slate-400 font-mono">${m}·(${x}) + ${b}</td>
-          <td class="p-2 text-purple-400 font-bold">${y}</td>
-          <td class="p-2 text-cyan-300 font-mono">(${x}, ${y})</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function logMathDataPoint() {
-      SoundEngine.click();
-      addXP(25, 'Plotted Mathematical Function');
-    }
-  </script>
-
-  <script>
     function updateCalculusPlot() {
       const xVal = parseFloat(document.getElementById('calc-slider-x').value);
       STEM_STATE.calculus.x = xVal;
 
-      // Function: f(x) = 0.5 * x^2 - 2
-      // Derivative: f'(x) = x
       const fx = 0.5 * Math.pow(xVal, 2) - 2;
       const fPrime = xVal;
 
@@ -2613,7 +1883,7 @@
 
       const behavior = document.getElementById('calc-eval-behavior');
       if (Math.abs(fPrime) < 0.05) {
-        behavior.textContent = 'Horizontal Turning Point (f\'(x) = 0)';
+        behavior.textContent = 'Turning Point (f\'(x) = 0)';
         behavior.className = 'text-xs font-bold text-amber-400 mt-1';
       } else if (fPrime > 0) {
         behavior.textContent = 'Strictly Increasing ↗';
@@ -2631,19 +1901,18 @@
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * window.devicePixelRatio;
-      canvas.height = rect.height * window.devicePixelRatio;
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      if (!rect.width || !rect.height) return;
+      canvas.width = rect.width;
+      canvas.height = rect.height;
 
       const w = rect.width;
       const h = rect.height;
       ctx.clearRect(0, 0, w, h);
 
       const originX = w / 2;
-      const originY = h / 2 + 30; // offset slightly downward
-      const scale = 28; // pixels per unit
+      const originY = h / 2 + 30;
+      const scale = 28;
 
-      // Axes
       ctx.strokeStyle = '#475569';
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -2651,12 +1920,6 @@
       ctx.moveTo(originX, 0); ctx.lineTo(originX, h);
       ctx.stroke();
 
-      ctx.fillStyle = '#64748b';
-      ctx.font = '9px monospace';
-      ctx.fillText('+x', w - 16, originY - 6);
-      ctx.fillText('+y', originX + 6, 12);
-
-      // Curve f(x) = 0.5x^2 - 2
       ctx.strokeStyle = '#ec4899';
       ctx.lineWidth = 2.5;
       ctx.beginPath();
@@ -2669,8 +1932,6 @@
       }
       ctx.stroke();
 
-      // Tangent Line at x0
-      // Tangent formula: y - y0 = slope * (x - x0) => y = slope * (x - x0) + y0
       ctx.strokeStyle = '#38bdf8';
       ctx.lineWidth = 2;
       ctx.beginPath();
@@ -2685,7 +1946,6 @@
       ctx.lineTo(originX + tX2 * scale, originY - tY2 * scale);
       ctx.stroke();
 
-      // Point of tangency node
       const ptCanvasX = originX + x0 * scale;
       const ptCanvasY = originY - y0 * scale;
       ctx.fillStyle = '#f59e0b';
@@ -2693,17 +1953,13 @@
       ctx.arc(ptCanvasX, ptCanvasY, 6, 0, Math.PI * 2);
       ctx.fill();
     }
-  </script>
 
-  <script>
     function calculateRollerCoaster() {
       const hill = parseFloat(document.getElementById('slider-roller-hill').value);
       const radius = parseFloat(document.getElementById('slider-roller-radius').value);
       document.getElementById('label-roller-hill').textContent = hill + ' m';
       document.getElementById('label-roller-radius').textContent = radius + ' m';
 
-      // Velocity at top of loop (height = 2 * radius)
-      // v^2 = 2g(h - 2r)
       const g = 9.8;
       const loopHeight = 2 * radius;
       const statusEl = document.getElementById('roller-status');
@@ -2713,8 +1969,8 @@
         statusEl.textContent = '✕ Failure: Not enough potential energy to clear loop!';
       } else {
         const v2 = 2 * g * (hill - loopHeight);
-        const centripetalAcc = v2 / radius; // a = v^2/r
-        const gForce = (centripetalAcc / g) + 1; // +1g seat force
+        const centripetalAcc = v2 / radius;
+        const gForce = (centripetalAcc / g) + 1;
 
         if (gForce > 5.5) {
           statusEl.className = 'text-xs font-bold px-3 py-2 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 text-center';
@@ -2730,7 +1986,6 @@
       const buffer = parseFloat(document.getElementById('slider-ocean-buffer').value);
       document.getElementById('label-ocean-buffer').textContent = buffer + ' kg';
       
-      // Starting pH: 5.8, equilibrium buffer curve
       const resultingPh = 5.8 + (buffer / 800) * 3.2;
       const statusEl = document.getElementById('ocean-status');
 
@@ -2751,7 +2006,6 @@
       document.getElementById('label-bridge-angle').textContent = `${angle}° (${angle === 60 ? 'Equilateral' : 'Optimized'})`;
       const statusEl = document.getElementById('bridge-status');
 
-      // Best truss angle around 55-65 degrees
       const fos = (1.5 + Math.sin(angle * Math.PI / 180) * 1.1).toFixed(2);
       if (fos >= 2.0) {
         statusEl.className = 'text-xs font-bold px-3 py-2 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-center';
@@ -2764,13 +2018,9 @@
 
     function launchMission(missionKey) {
       SoundEngine.success();
-      addXP(150, `Successfully completed STEM Engineering Mission (${missionKey})!`);
-      document.getElementById('badge-solver').classList.remove('opacity-60');
-      document.getElementById('badge-solver').classList.add('border-cyan-400', 'bg-cyan-950/40');
+      addXP(150, `Completed Mission (${missionKey})!`);
     }
-  </script>
 
-  <script>
     function renderGlossaryTerms(filter = '') {
       const container = document.getElementById('glossary-terms-container');
       container.innerHTML = '';
@@ -2822,14 +2072,10 @@
       SoundEngine.click();
       const item = VOCAB_DATABASE[termKey];
       if (!item) return;
-
       showToast(`📖 ${item.en} [ES: ${item.es}] — ${item.def}`, 'info');
     }
-  </script>
 
-  <script>
     let teacherModeActive = false;
-
     function toggleTeacherView() {
       SoundEngine.click();
       teacherModeActive = !teacherModeActive;
@@ -2860,13 +2106,11 @@
     function dispatchLabAssignment() {
       SoundEngine.success();
       const subject = document.getElementById('assign-subject').value;
-      const cohort = document.getElementById('assign-group').value;
       closeAssignModal();
-      showToast(`Assigned new ${subject} lab to cohort "${cohort}". Notifications dispatched!`);
+      showToast(`Assigned new ${subject} lab to students!`);
     }
-  </script>
 
-  <script>
+    // Background Particle Loop
     (function initBackgroundCanvas() {
       const canvas = document.getElementById('bg-particle-canvas');
       if (!canvas) return;
@@ -2882,7 +2126,7 @@
       window.addEventListener('resize', resize);
       resize();
 
-      for (let i = 0; i < 35; i++) {
+      for (let i = 0; i < 30; i++) {
         particles.push({
           x: Math.random() * w,
           y: Math.random() * h,
