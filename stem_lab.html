@@ -1,74 +1,75 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>STEM Lab: Learn, Experiment, Connect</title>
   
-  <!-- Tailwind CSS CDN -->
+  <!-- Tailwind CSS loaded if allowed by network -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            lab: {
-              900: '#070b14',
-              800: '#0d1527',
-              700: '#14203d',
-              600: '#1e305b',
-              accent: '#38bdf8',
-              chem: '#10b981',
-              phys: '#f59e0b',
-              math: '#8b5cf6',
-              calc: '#ec4899'
-            }
-          },
-          fontFamily: {
-            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-            mono: ['JetBrains Mono', 'Menlo', 'monospace']
-          }
-        }
-      }
-    }
-  </script>
   
-  <!-- Fallback CSS styles to guarantee flawless display even if CDN is delayed -->
+  <!-- Complete standalone CSS: Guarantees 100% styled futuristic dark UI even if CDN is blocked by school firewall -->
   <style>
+    :root {
+      --bg-lab-900: #070b14;
+      --bg-lab-800: #0d1527;
+      --bg-lab-700: #14203d;
+      --accent-cyan: #38bdf8;
+      --accent-amber: #f59e0b;
+      --accent-emerald: #10b981;
+      --accent-purple: #a855f7;
+      --accent-pink: #ec4899;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       background-color: #070b14;
       color: #f1f5f9;
-      margin: 0;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      overflow-x: hidden;
+      min-height: 100vh;
     }
+
+    /* Glass Panels & Modern Lab Theme */
     .glass-panel {
-      background: rgba(13, 21, 39, 0.85);
+      background: rgba(13, 21, 39, 0.9);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1rem;
     }
+
     .glass-card {
-      background: rgba(20, 32, 61, 0.7);
+      background: rgba(20, 32, 61, 0.75);
       backdrop-filter: blur(8px);
-      border: 1px solid rgba(56, 189, 248, 0.2);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 0.75rem;
     }
+
     .step-pill {
       padding: 0.35rem 0.85rem;
       border-radius: 9999px;
       font-size: 0.75rem;
       font-weight: 700;
       white-space: nowrap;
-      background: rgba(30, 41, 59, 0.8);
+      background: rgba(30, 41, 59, 0.9);
       color: #94a3b8;
       border: 1px solid rgba(51, 65, 85, 0.8);
       transition: all 0.2s ease;
     }
+
     .step-pill.active {
-      background: rgba(56, 189, 248, 0.2);
+      background: rgba(56, 189, 248, 0.25);
       color: #38bdf8;
-      border-color: rgba(56, 189, 248, 0.5);
+      border-color: rgba(56, 189, 248, 0.6);
     }
+
     .vocab-word {
       color: #38bdf8;
       text-decoration: underline;
@@ -79,23 +80,26 @@
     .vocab-word:hover {
       color: #7dd3fc;
     }
+
     @keyframes waveMotion {
-      0%, 100% { border-radius: 4px 4px 18px 18px; transform: scaleY(1); }
-      50% { transform: scaleY(1.03); }
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(1.04); }
     }
     .liquid-wave {
       animation: waveMotion 3s ease-in-out infinite;
+      transform-origin: bottom center;
     }
+
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    input[type=range] { cursor: pointer; }
   </style>
 </head>
-<body class="bg-lab-900 text-slate-100 font-sans antialiased min-h-screen selection:bg-cyan-500 selection:text-black relative overflow-x-hidden">
+<body class="bg-[#070b14] text-slate-100 antialiased min-h-screen relative">
 
   <!-- Background Particle Animation -->
   <canvas id="bg-particle-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
 
-  <!-- Audio Synthesizer (No external media files required) -->
   <script>
     const SoundEngine = {
       ctx: null,
@@ -142,9 +146,8 @@
 
   <header class="sticky top-0 z-50 glass-panel border-b border-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <!-- Logo & Branding -->
-      <a href="#home" class="flex items-center gap-3 group">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 via-indigo-500 to-purple-600 flex items-center justify-center font-black text-xl shadow-lg shadow-cyan-500/30 group-hover:scale-105 transition-transform">
+      <a href="#home" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 via-indigo-500 to-purple-600 flex items-center justify-center font-black text-xl shadow-lg shadow-cyan-500/30">
           ⚗️
         </div>
         <div>
@@ -153,18 +156,17 @@
         </div>
       </a>
 
-      <!-- Navigation links -->
+      <!-- Quick Nav -->
       <nav class="hidden md:flex items-center gap-1 font-medium text-sm text-slate-300">
         <a href="#home" class="px-3 py-1.5 rounded-lg hover:text-cyan-400 hover:bg-slate-800/50 transition">Home</a>
-        <a href="#dashboard" class="px-3 py-1.5 rounded-lg hover:text-cyan-400 hover:bg-slate-800/50 transition">Dashboard</a>
-        <a href="#labs" class="px-3 py-1.5 rounded-lg hover:text-cyan-400 hover:bg-slate-800/50 transition">Virtual Labs</a>
+        <a href="#dashboard" class="px-3 py-1.5 rounded-lg hover:text-cyan-400 hover:bg-slate-800/50 transition">Virtual Labs</a>
         <a href="#challenges" class="px-3 py-1.5 rounded-lg hover:text-cyan-400 hover:bg-slate-800/50 transition">STEM Missions</a>
         <a href="#progress" class="px-3 py-1.5 rounded-lg hover:text-cyan-400 hover:bg-slate-800/50 transition">Achievements</a>
       </nav>
 
       <!-- Language Support & Teacher Switch -->
       <div class="flex items-center gap-2 sm:gap-3">
-        <div class="flex items-center gap-1.5 bg-slate-800/90 border border-amber-500/40 px-3 py-1 rounded-full text-xs font-bold text-amber-400 shadow-sm">
+        <div class="flex items-center gap-1.5 bg-slate-800/90 border border-amber-500/40 px-3 py-1 rounded-full text-xs font-bold text-amber-400">
           <span>⚡</span>
           <span id="nav-xp-counter">450</span>
           <span class="text-[10px] text-slate-400 font-mono">XP</span>
@@ -187,19 +189,18 @@
   <!-- Notification Toast Container -->
   <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none max-w-sm w-full"></div>
 
-  <section id="home" class="relative pt-12 pb-20 md:pt-20 md:pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
-    <div class="relative z-10 text-center max-w-4xl mx-auto">
-      
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-800/80 border border-cyan-500/30 text-xs font-medium text-cyan-300 mb-6 backdrop-blur-md shadow-lg">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+  <section id="home" class="relative pt-12 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+    <div class="relative z-10 max-w-4xl mx-auto">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-800/80 border border-cyan-500/30 text-xs font-medium text-cyan-300 mb-6 backdrop-blur-md">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
         <span>Virtual Laboratory Online</span>
         <span class="text-slate-500">•</span>
         <span class="text-slate-300">Empowering Bilingual Scientists</span>
       </div>
 
-      <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white mb-4">
+      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-4">
         <span class="block">STEM LAB</span>
-        <span class="block text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 via-sky-300 to-purple-400 bg-clip-text text-transparent mt-2">
+        <span class="block text-2xl sm:text-4xl font-bold bg-gradient-to-r from-cyan-400 via-sky-300 to-purple-400 bg-clip-text text-transparent mt-2">
           Experiment. Calculate. Discover. Solve.
         </span>
       </h1>
@@ -209,47 +210,47 @@
       </p>
 
       <div class="flex flex-wrap items-center justify-center gap-4">
-        <a href="#labs" onclick="SoundEngine.click()" class="inline-flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-base bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-600 text-white shadow-xl shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-105 transition-all transform active:scale-95">
+        <a href="#dashboard" onclick="SoundEngine.click()" class="inline-flex items-center gap-3 px-8 py-3.5 rounded-xl font-bold text-base bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-600 text-white shadow-xl shadow-cyan-500/25 hover:scale-105 transition transform active:scale-95">
           <span>ENTER THE LAB</span>
           <span class="text-xl">→</span>
         </a>
-        <a href="#challenges" onclick="SoundEngine.click()" class="inline-flex items-center gap-2 px-6 py-4 rounded-xl font-semibold text-base bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700 transition">
+        <a href="#challenges" onclick="SoundEngine.click()" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-base bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700 transition">
           <span>🚀 Explore Missions</span>
         </a>
       </div>
 
-      <div class="mt-14 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 text-center">
-        <div class="glass-card p-3 rounded-xl hover:border-cyan-400/50 transition transform hover:-translate-y-1">
+      <div class="mt-12 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 text-center">
+        <div class="glass-card p-3 rounded-xl">
           <div class="text-2xl mb-1">⚛️</div>
           <div class="text-xs font-bold text-slate-200">Atoms</div>
           <div class="text-[10px] text-slate-400 font-mono">Bohr Model</div>
         </div>
-        <div class="glass-card p-3 rounded-xl hover:border-amber-400/50 transition transform hover:-translate-y-1">
+        <div class="glass-card p-3 rounded-xl">
           <div class="text-2xl mb-1">⚡</div>
           <div class="text-xs font-bold text-slate-200">Velocity</div>
           <div class="text-[10px] text-slate-400 font-mono">v = d / t</div>
         </div>
-        <div class="glass-card p-3 rounded-xl hover:border-emerald-400/50 transition transform hover:-translate-y-1">
+        <div class="glass-card p-3 rounded-xl">
           <div class="text-2xl mb-1">🧪</div>
           <div class="text-xs font-bold text-slate-200">Beakers & pH</div>
           <div class="text-[10px] text-slate-400 font-mono">-log[H⁺]</div>
         </div>
-        <div class="glass-card p-3 rounded-xl hover:border-purple-400/50 transition transform hover:-translate-y-1">
+        <div class="glass-card p-3 rounded-xl">
           <div class="text-2xl mb-1">📈</div>
           <div class="text-xs font-bold text-slate-200">Equations</div>
           <div class="text-[10px] text-slate-400 font-mono">y = mx + b</div>
         </div>
-        <div class="glass-card p-3 rounded-xl hover:border-pink-400/50 transition transform hover:-translate-y-1">
+        <div class="glass-card p-3 rounded-xl">
           <div class="text-2xl mb-1">∫ dx</div>
           <div class="text-xs font-bold text-slate-200">Calculus</div>
           <div class="text-[10px] text-slate-400 font-mono">f'(x) Tangents</div>
         </div>
-        <div class="glass-card p-3 rounded-xl hover:border-cyan-400/50 transition transform hover:-translate-y-1">
+        <div class="glass-card p-3 rounded-xl">
           <div class="text-2xl mb-1">🧬</div>
           <div class="text-xs font-bold text-slate-200">Molecules</div>
-          <div class="text-[10px] text-slate-400 font-mono">Covalent Bonds</div>
+          <div class="text-[10px] text-slate-400 font-mono">Bonds</div>
         </div>
-        <div class="glass-card p-3 rounded-xl hover:border-yellow-400/50 transition transform hover:-translate-y-1 col-span-2 sm:col-span-1">
+        <div class="glass-card p-3 rounded-xl col-span-2 sm:col-span-1">
           <div class="text-2xl mb-1">🪐</div>
           <div class="text-xs font-bold text-slate-200">Gravity</div>
           <div class="text-[10px] text-slate-400 font-mono">g = 9.8 m/s²</div>
@@ -258,7 +259,7 @@
     </div>
   </section>
 
-  <section id="dashboard" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+  <section id="dashboard" class="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
     <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
       <div>
         <div class="text-xs font-bold uppercase tracking-wider text-cyan-400 mb-1">Virtual STEM Stations</div>
@@ -284,7 +285,7 @@
     </div>
 
     <!-- Active Laboratory Box -->
-    <div id="labs" class="glass-panel rounded-2xl p-4 sm:p-6 lg:p-8 border border-slate-800 shadow-2xl relative">
+    <div class="glass-panel rounded-2xl p-4 sm:p-6 lg:p-8 border border-slate-800 shadow-2xl relative">
       
       <!-- Lab Header -->
       <div class="flex flex-wrap items-center justify-between pb-6 border-b border-slate-800 gap-4">
@@ -301,7 +302,6 @@
           </div>
         </div>
 
-        <!-- Academic Vocabulary Quick Bar -->
         <div class="flex flex-wrap items-center gap-2">
           <span class="text-xs font-semibold text-slate-400">Target Academic Terms:</span>
           <div id="lab-quick-terms" class="flex flex-wrap gap-1.5"></div>
@@ -331,6 +331,7 @@
 
       <div class="py-6">
         
+        <!-- ================= PHYSICS LAB ================= -->
         <div id="lab-view-physics" class="lab-module-container space-y-8">
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -377,7 +378,6 @@
               </div>
             </div>
 
-            <!-- Parameters Sliders -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
               <div>
                 <div class="flex justify-between text-xs font-semibold mb-1">
@@ -562,6 +562,7 @@
           </div>
         </div>
 
+        <!-- ================= CHEMISTRY LAB ================= -->
         <div id="lab-view-chemistry" class="lab-module-container space-y-8 hidden">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="glass-card p-5 rounded-xl border-emerald-500/20">
@@ -599,7 +600,6 @@
               </button>
             </div>
 
-            <!-- Substance Selection Tray -->
             <div class="mb-6">
               <label class="block text-xs font-semibold text-slate-300 mb-2">Select a chemical reagent to test:</label>
               <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
@@ -734,6 +734,7 @@
           </div>
         </div>
 
+        <!-- ================= MATH LAB ================= -->
         <div id="lab-view-math" class="lab-module-container space-y-8 hidden">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="glass-card p-5 rounded-xl border-purple-500/20">
@@ -794,6 +795,7 @@
           </div>
         </div>
 
+        <!-- ================= CALCULUS LAB ================= -->
         <div id="lab-view-calculus" class="lab-module-container space-y-8 hidden">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="glass-card p-5 rounded-xl border-pink-500/20">
@@ -863,7 +865,7 @@
     </div>
   </section>
 
-  <section id="challenges" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+  <section id="challenges" class="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
     <div class="mb-8">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-xs font-semibold mb-2">
         <span>🎮</span> Real-World Mission Simulator
@@ -969,7 +971,7 @@
     </div>
   </section>
 
-  <section id="progress" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+  <section id="progress" class="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
     <div class="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800">
       
       <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-800 gap-4">
@@ -1062,7 +1064,7 @@
     </div>
   </section>
 
-  <section id="teacher-section" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto hidden">
+  <section id="teacher-section" class="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto hidden">
     <div class="glass-panel rounded-2xl p-6 sm:p-8 border border-indigo-500/40 shadow-2xl">
       <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-slate-800 gap-4">
         <div>
@@ -1121,8 +1123,8 @@
     </div>
   </section>
 
-  <!-- Final Inspiring Quote -->
-  <section class="py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto text-center relative">
+  <!-- Inspiring Closing Banner -->
+  <section class="py-14 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto text-center relative">
     <div class="glass-panel p-8 sm:p-12 rounded-3xl border border-cyan-500/30 relative overflow-hidden">
       <div class="text-3xl mb-3">🌌</div>
       <blockquote class="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-4 leading-snug">
@@ -1138,7 +1140,7 @@
 
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
         <span class="text-xs uppercase font-extrabold tracking-widest text-slate-400">READY TO ENTER THE LAB?</span>
-        <a href="#labs" onclick="SoundEngine.click()" class="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-600 text-black font-extrabold px-6 py-3 rounded-xl text-sm shadow-xl shadow-cyan-500/30 hover:scale-105 transition active:scale-95">
+        <a href="#dashboard" onclick="SoundEngine.click()" class="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-600 text-black font-extrabold px-6 py-3 rounded-xl text-sm shadow-xl shadow-cyan-500/30 hover:scale-105 transition active:scale-95">
           <span>START EXPERIMENTING →</span>
         </a>
       </div>
@@ -1533,7 +1535,6 @@
       const h = rect.height;
       ctx.clearRect(0, 0, w, h);
 
-      // Height Reference Scale
       ctx.strokeStyle = 'rgba(148, 163, 184, 0.2)';
       ctx.lineWidth = 1;
       ctx.fillStyle = '#64748b';
@@ -1549,7 +1550,6 @@
         ctx.fillText(heightMark + 'm', 8, y + 3);
       }
 
-      // Ground Platform
       ctx.fillStyle = '#1e293b';
       ctx.fillRect(40, h - 35, w - 80, 10);
       ctx.fillStyle = '#10b981';
@@ -1560,7 +1560,6 @@
       const currentY = dropStartY + STEM_STATE.physics.dropProgress * (dropEndY - dropStartY);
       const centerX = w / 2;
 
-      // Ball / Mass
       const radius = 10 + (STEM_STATE.physics.mass / 25) * 14;
       const grad = ctx.createRadialGradient(centerX - 4, currentY - 4, 2, centerX, currentY, radius);
       grad.addColorStop(0, '#fef08a');
@@ -2110,7 +2109,6 @@
       showToast(`Assigned new ${subject} lab to students!`);
     }
 
-    // Background Particle Loop
     (function initBackgroundCanvas() {
       const canvas = document.getElementById('bg-particle-canvas');
       if (!canvas) return;
@@ -2157,7 +2155,6 @@
       loop();
     })();
 
-    // Initialize Default State on Load
     window.addEventListener('DOMContentLoaded', () => {
       selectLabTab('physics');
       updatePhysicsParams();
